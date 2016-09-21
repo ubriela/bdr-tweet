@@ -8,8 +8,8 @@ platform = platform.system()
 
 # using proper library depends on OS type
 if platform == 'Windows':
-    svm_learn = 'lib/svm_learn.exe'
-    svm_classify = 'lib/svm_classify.exe'
+    svm_learn = 'svm_learn.exe'
+    svm_classify = 'svm_classify.exe'
 else:
     svm_learn = './lib/svm_learn'
     svm_classify = './lib/svm_classify'

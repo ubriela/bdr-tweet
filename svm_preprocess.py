@@ -64,7 +64,7 @@ def read_Training_Tweets(filename,vocab):
 
                 tempList.append(a)
         b=" ".join(tempList)    #  a concatnated string of a list of " sorted_word_index:appear_time"
-
+        #print tokens
         tokens.append(b)
 
     return tokens

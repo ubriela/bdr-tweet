@@ -38,7 +38,7 @@ def sensiment_analyzer(tweet_input, tweet_output, delimiter=',', tweet_index=3):
     
         for row in reader:
             res=SentiStrength(row[tweet_index])
-            print res
+            # print res
             mood = int(res.split()[2])
             moods.append(mood)
             if mood_stats.has_key(mood):
