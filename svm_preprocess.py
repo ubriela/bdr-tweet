@@ -132,8 +132,7 @@ def save_data(train_data,test_data):
        output_file2.write(line2+"\n")
     output_file2.close()
 
-def main():
-    global input_train_file,input_test_file
+def preprocess(input_train_file, input_test_file):
     Tweet_vocab=get_vocab()
     train_Tweets=read_Training_Tweets(input_train_file,Tweet_vocab)
     test_Tweets=read_Test_Tweets(input_test_file,Tweet_vocab)
@@ -141,4 +140,4 @@ def main():
     save_data(train_Tweets,test_Tweets)
     print ("Prerocess train and test data to output two corresponding files in SVM format: " + train_file + "\t" + test_file)
     
-main()
+preprocess(input_train_file, input_test_file)

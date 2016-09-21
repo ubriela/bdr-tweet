@@ -27,9 +27,7 @@ def read_Test_Tweets(test_file):
         complete.extend(tokens)
     return complete
 
-def main():
-    
-    global input_test_file
+def postprocess(input_file, output_score, output_file):
     Labels=["Informative","Non-Informative"]
 
     a=[]    # list of score for testing tweets
@@ -49,7 +47,7 @@ def main():
             b="UNKNOWN"
         output_labels.append(b)
     
-    tweets=read_Test_Tweets(input_test_file)
+    tweets=read_Test_Tweets(input_file)
     
     a=[]    # list of tweet with labels
     for i in xrange(len(output_labels)):
@@ -58,9 +56,10 @@ def main():
             a.append(tweets[i])
         
     
-    f_out=open(output_informative_tweet,"w")
+    f_out=open(output_file,"w")
     wr = csv.writer(f_out,lineterminator='\n')
     wr.writerows(a)
     f_out.close()
     print ("Postprocess tweets to output only informative tweets: " + output_informative_tweet)
-main()
+
+postprocess(input_test_file, output_score, output_informative_tweet)

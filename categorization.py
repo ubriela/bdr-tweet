@@ -12,7 +12,7 @@ test_delimiter, test_text_index = ",", 3
 
 tweet_category_file = "./output/tweet.category.csv"
 
-def main():
+def categorize_tweets(input_file, output_file, test_delimiter, test_text_index):
 
     tweets=[]
     newDataset=[]
@@ -24,9 +24,7 @@ def main():
     categories = ['Food', 'Water', 'Shelter', 'Medicine']
     weight=0.2
         
-    dictionary={'Food':[], 'Water':[], 'Shelter':[], 'Medicine':[]}    
-        
-            
+    dictionary={'Food':[], 'Water':[], 'Shelter':[], 'Medicine':[]}
         
     """
     Extracting the tweets from csv
@@ -97,4 +95,4 @@ def main():
 
     print "Categorized tweets into groups, e.g., food, water, etc: " + tweet_category_file
 
-main()
+categorize_tweets( informative_tweet, tweet_category_file, test_delimiter, test_text_index)

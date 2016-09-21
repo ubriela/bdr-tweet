@@ -14,7 +14,7 @@ else:
     svm_learn = './lib/svm_learn'
     svm_classify = './lib/svm_classify'
 
-os.system("python preprocess_rawfile.py")
+os.system("python preprocess_raw_tweets.py")
 
 print os.system("python svm_preprocess.py")
 print os.system(svm_learn + " ./data/Tweet_Train.txt ./output/tweet.model")

@@ -5,7 +5,7 @@ import glob
 
 INPUT_FOLDER = './data/input/'
 OUTPUT_FOLDER = './data/output/'
-DISASTER_LIST = './data/disasters_grid_listing.csv'
+DISASTER_LIST = './data/updated_major_disaster.csv'
 TWEET_MINIMUM_LENGTH = 3
 
 """
@@ -27,6 +27,7 @@ def parse_tweet_json(file):
     with open(INPUT_FOLDER + file) as f:
         lines = f.readlines()
     for line in lines:
+        # print line
         json_tweet = json.loads(line)
         id = json_tweet['id']
         uid = json_tweet['user']['id']
@@ -53,26 +54,26 @@ def parse_tweet_json(file):
 # dates = np.loadtxt(DISASTER_LIST, dtype = 'str', delimiter='\",\"', usecols = ([1]), skiprows=1)
 # disasters_date = [date.split('/')[2] + date.split('/')[0] + date.split('/')[1] for date in dates]
 # print 'Extracting data from the following dates: ', dates
+
+total_tweets = 0
+for file in glob.glob(INPUT_FOLDER + "/*"):
+    filename = re.findall('[^\\\\/]+', file)[-1]
+    date = filename.split('.')[0]
+    # if date in disasters_date:
+    tweet_count = parse_tweet_json(filename)
+    print 'Date ' + date + ' has ' + str(tweet_count ) + ' tweets'
+    total_tweets += tweet_count
+    print '..... total ' + str(total_tweets) + ' tweets have been extracted...'
+
+print 'Done!'
+
+# min_lat, max_lat, min_lon, max_lon = 33, 39, -101, -93
 #
-# for file in glob.glob(INPUT_FOLDER + "/*"):
-#     filename = re.findall('[^\\\\/]+', file)[-1]
-#     date = filename.split('.')[0]
-#     total_tweets = 0
-#     if date in disasters_date:
-#         tweet_count = parse_tweet_json(filename)
-#         print 'Date ' + date + ' has ' + str(tweet_count ) + ' tweets'
-#         total_tweets += tweet_count
-#         print '..... total ' + str(total_tweets) + ' tweets extracted...'
+# data = np.loadtxt(OUTPUT_FOLDER + './20160903.txt', dtype= float, delimiter='\t', usecols = (2,3))
+# valid_rows = np.all([min_lat <= data[:,0], data[:,0] <= max_lat, min_lon <= data[:,1],  data[:,1]<= max_lon], axis=0)
 #
-# print 'Done!'
-
-min_lat, max_lat, min_lon, max_lon = 33, 39, -101, -93
-
-data = np.loadtxt(OUTPUT_FOLDER + './20160903.txt', dtype= float, delimiter='\t', usecols = (2,3))
-valid_rows = np.all([min_lat <= data[:,0], data[:,0] <= max_lat, min_lon <= data[:,1],  data[:,1]<= max_lon], axis=0)
-
-data = np.loadtxt(OUTPUT_FOLDER + './20160903.txt', dtype= 'str', delimiter='\t')
-data = data[valid_rows]
-
-print type(data), data.shape
-np.savetxt(OUTPUT_FOLDER + './20160903_filtered.txt', data, fmt='%s', delimiter='\t')
+# data = np.loadtxt(OUTPUT_FOLDER + './20160903.txt', dtype= 'str', delimiter='\t')
+# data = data[valid_rows]
+#
+# print type(data), data.shape
+# np.savetxt(OUTPUT_FOLDER + './20160903_filtered.txt', data, fmt='%s', delimiter='\t')
