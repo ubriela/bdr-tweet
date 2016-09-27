@@ -7,8 +7,9 @@ import csv
 import sys
 import random
 import re
+from tweet_tokenizer import tokenize
 
-input_train_file="./data/CL_refined_training.csv"
+input_train_file="./data/CL_training.csv"
 input_test_file = "./data/tweets_hashtag.csv" # "./data/output/test.txt" #
 test_delimiter, test_text_index = ",", 3
 
@@ -29,6 +30,14 @@ def get_vocab():
     input_file.close()
     return vocab
 
+EmoticonLookupTable = "./data/SentStrength_Data/EmoticonLookupTable.txt"
+
+emoticons = []
+
+with open(EmoticonLookupTable) as f:
+    for line in f.readlines():
+        emoticon = line.split()[0]
+        emoticons.append(emoticon)
 
 """
 for each tweet, return a list of distict words and their frequencies
@@ -36,23 +45,26 @@ for each tweet, return a list of distict words and their frequencies
 def read_Training_Tweets(filename,vocab):  
     
     file_in1=open(filename,"r")
-    datareader=csv.reader(file_in1)
+    datareader=csv.reader(file_in1, delimiter="\t")
     tokens=[] #
     
     for line in datareader:
-        if line[0]=="Informative":
+        informativeness = line[3]
+        if informativeness == "Related and informative":
             tempList=['1']
-        else:
+        elif informativeness == "Related - but not informative":
             tempList=['-1']
+        else:
+            continue
         
-        tempDict={} # <word_index, number of times the word appear in tweet
-        x=line[1].strip().replace("\n","").split()
-
+        tempDict={} # <word_index, number of times the word appear in tweet>
+        x=tokenize(line[4])
         # for each word in tweet (x)
         for item in x:
-            if len(item)>0:
-                # if
-                if vocab[item.strip()] in tempDict.keys():
+            if len(item)>0 and len(item.strip('\'"?,.')) > 0:
+                # if item in emoticons:
+                #     print item, item.strip('\'"?,.')
+                if vocab[item] in tempDict.keys():
                     tempDict[vocab[item]]+=1
                 else:
                     tempDict[vocab[item]]=1
@@ -77,7 +89,7 @@ but this function read test data and all tweets are informative
 def read_Test_Tweets(filename,vocab):
     
     complete=[]
-    for n in [filename] :
+    for n in [filename]:
         
         y=open(n,"r")
         datareader=csv.reader(y, delimiter=test_delimiter)
@@ -90,7 +102,7 @@ def read_Test_Tweets(filename,vocab):
                 # tempList=[line[0]]
                 tempList = ['1']
                 tempDict={}
-                row=line[test_text_index].replace("\n","")
+                row=line[test_text_index].replace("\n"," ")
                 row=re.sub(r"RT @\S+", "",row)
                 row=re.sub(r"MT @\S+", "",row)
                 row=' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)"," ",row).split())

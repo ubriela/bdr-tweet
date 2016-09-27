@@ -6,6 +6,9 @@ import platform
 
 platform = platform.system()
 
+os.system("python process_crisislex.py")
+print "Created training data from CrisisLex26"
+
 # using proper library depends on OS type
 if platform == 'Windows':
     svm_learn = '.\lib\svm_learn.exe'

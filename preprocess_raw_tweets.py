@@ -1,37 +1,36 @@
-
 """
 extract raw tweet and output "clean" tweets and a dictionary of words
 """
 
 import csv
-import re
+from tweet_tokenizer import tokenize
 
-input_filename = "./data/CL_raw_training.csv"
+input_filename = "./data/CL_training.csv"
 
 output_filename = "./data/CL_refined_training.csv"
 vocab_filename = "./data/Tweets.vocab"
+tweet_index = 4
 
 def read_data(filename):
-    data1=[]
-    data2=[]
+    all_rows=[]
+    all_tokens=[]
     file_in1=open(filename,"r")
-    datareader=csv.reader(file_in1)
-
+    datareader=csv.reader(file_in1,delimiter='\t')
+    # next(datareader)
     for line in datareader:
-        row=line[1]
-        row=re.sub(r"RT @\S+", "",row)
-        row=re.sub(r"MT @\S+", "",row)
-        row=' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)"," ",row).split()) #remove hyperlinks 
-        row=row.lower()
-        data1.append([line[0],row])
-        row=row.split()
-        data2.append(row)
-    return data2,data1
+        tweet=line[tweet_index]
+        tokens = tokenize(tweet)
+        tokenized_tweet = ' '.join(tokens)
+        tokenized_row = line[0:tweet_index]
+        tokenized_row.append(tokenized_tweet)
+        all_rows.append(tokenized_row)
+        all_tokens.append(tokens)
+    return all_tokens,all_rows
     
 def save_data(save_tweets,output_filename):
     f_out=open(output_filename,"w")
 
-    wr = csv.writer(f_out,lineterminator='\n')
+    wr = csv.writer(f_out,lineterminator='\n',delimiter='\t')
     wr.writerows(save_tweets)
     f_out.close()
     return
