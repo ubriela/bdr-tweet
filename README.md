@@ -1,4 +1,6 @@
 Informative/Noninformative Dataset
+https://github.com/sajao/CrisisLex/tree/master/data/CrisisLexT26
+
 https://github.com/sajao/CrisisLex/tree/master/data/CrisisLexT6/
 
 

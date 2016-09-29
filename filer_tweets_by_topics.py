@@ -2,11 +2,17 @@ import json
 import re
 import numpy as np
 import glob
-
-INPUT_FOLDER = './data/input/'
-OUTPUT_FOLDER = './data/output/'
+from tweet_tokenizer import tokenize
+INPUT_FOLDER = './data/raw_tweets/data/'
+OUTPUT_FOLDER = './data/selected_tweets/'
 DISASTER_LIST = './data/updated_major_disaster.csv'
 TWEET_MINIMUM_LENGTH = 3
+
+keywords_file = "./data/CrisisLex/data/ClimateCovE350/twitter_climate_keywords.txt"
+raw_tweets = "./data/raw_tweets/data"
+keywords = []
+with open(keywords_file) as f:
+    keywords = set([l.lower() for l in f.readlines()])
 
 """
 remove tab, \n, hyperlinks from tweets
@@ -27,16 +33,18 @@ def parse_tweet_json(file):
     with open(INPUT_FOLDER + file) as f:
         lines = f.readlines()
     for line in lines:
-        # print line
         json_tweet = json.loads(line)
         id = json_tweet['id']
         uid = json_tweet['user']['id']
         timestamp_ms = json_tweet['timestamp_ms']
         created_at = json_tweet['created_at']
         text = json_tweet['text'].encode('utf-8').strip()
-        text = clean_line(text)
         if len(text) < TWEET_MINIMUM_LENGTH:
             continue
+        tokens = tokenize(text)
+        if not any(t in keywords for t in tokens):
+            continue
+        text = ' '.join(tokens)
         loc = json_tweet['geo']['coordinates']
         if id and uid and timestamp_ms and created_at and loc:
             tweet_dict = {'uid' : uid, 'timestamp_ms' : timestamp_ms, 'created_at' : created_at, 'text' : text, 'lat' : loc[0], 'lon' : loc[1]}

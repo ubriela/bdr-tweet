@@ -1,0 +1,14 @@
++ informative|not informative
+informativeness (informative or not informative)
+
+
++ information types (e.g. caution and advice, infrastructure damage)
++ information sources (e.g. governments, NGOs).
+
++ relevant|not relevant
+
++ damage|no damage|not relevant
+
+damage class: tweets related to the disaster and carrying information about damages to the infrastructures or on the population;
+no damage class: tweets related to the disaster but not carrying relevant information for the assessment of damages;
+not relevant class: tweets collected while building the dataset, but not related to any disaster (noise).

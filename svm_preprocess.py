@@ -99,16 +99,19 @@ def read_Test_Tweets(filename,vocab):
             if line==[]:
                 continue
             else:
+                print line[test_text_index]
                 # tempList=[line[0]]
                 tempList = ['1']
                 tempDict={}
-                row=line[test_text_index].replace("\n"," ")
-                row=re.sub(r"RT @\S+", "",row)
-                row=re.sub(r"MT @\S+", "",row)
-                row=' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)"," ",row).split())
-                x=row.lower().split()   # array of words in tweet
+                # row=line[test_text_index]#.replace("\n"," ")
+                # row=re.sub(r"RT @\S+", "",row)
+                # row=re.sub(r"MT @\S+", "",row)
+                # row=' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)"," ",row).split())
+                # x=row.lower().split()   # array of words in tweet
+                x = tokenize(line[test_text_index])
             if len(x)<1 or x==" ":
                 continue
+            # print x
             for item in x:
                 if len(item)>0:
                     if item.strip() in vocab.keys(): # discard word that is not in vocab
@@ -123,7 +126,6 @@ def read_Test_Tweets(filename,vocab):
                 a=str(str(key)+":"+str(tempDict[key]))
                 tempList.append(a)
             b=" ".join(tempList)
-
             tokens.append(b)
         
         complete.extend(tokens)
