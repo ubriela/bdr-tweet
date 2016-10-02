@@ -11,7 +11,7 @@ from tweet_tokenizer import tokenize
 
 input_train_file="./data/CL_training.csv"
 input_test_file = "./data/tweets_hashtag.csv" # "./data/output/test.txt" #
-test_delimiter, test_text_index = ",", 3
+test_delimiter, test_text_index, test_informative_index = "\t", 2, 1
 
 train_file = "./data/Tweet_Train.txt"
 test_file = "./data/Tweet_Test.txt"
@@ -99,9 +99,11 @@ def read_Test_Tweets(filename,vocab):
             if line==[]:
                 continue
             else:
-                print line[test_text_index]
-                # tempList=[line[0]]
-                tempList = ['1']
+                informativeness = line[test_informative_index]
+                if informativeness == "YES":
+                    tempList = ['1']
+                else:
+                    tempList = ['-1']
                 tempDict={}
                 # row=line[test_text_index]#.replace("\n"," ")
                 # row=re.sub(r"RT @\S+", "",row)

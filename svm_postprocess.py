@@ -54,7 +54,6 @@ def postprocess(input_file, output_score, output_file):
         if output_labels[i]=="Informative":
             tweets[i].append(output_labels[i])  # append label to the end of tweet
             a.append(tweets[i])
-        
     
     f_out=open(output_file,"w")
     wr = csv.writer(f_out,lineterminator='\n')
