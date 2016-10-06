@@ -7,9 +7,11 @@ import os
 import csv
 
 # tweet_category_file = "./output/tweet.category.csv"
-tweet_category_file = "./data/output/20160903.txt"
+tweet_category_file = "./data/election_neg.txt"
 
-tweet_senti_file = "./output/tweets_senti.csv"
+tweet_senti_file = "./output/election_senti_neg.csv"
+
+tweet_index = 0 #6
 
 
 def SentiStrength(tweet):
@@ -37,8 +39,13 @@ def sensiment_analyzer(tweet_input, tweet_output, delimiter=',', tweet_index=3):
             reader.append(item)
     
         for row in reader:
-            res=SentiStrength(row[tweet_index])
-            # print res
+            s = row[tweet_index]
+            try:
+                s = unicode()
+            except UnicodeDecodeError:
+                s = str(s).encode('string_escape')
+                s = unicode(s)
+            res=SentiStrength(s)
             mood = int(res.split()[2])
             moods.append(mood)
             if mood_stats.has_key(mood):
@@ -59,4 +66,4 @@ def sensiment_analyzer(tweet_input, tweet_output, delimiter=',', tweet_index=3):
                 i+=1
 
 if __name__=="__main__":
-    sensiment_analyzer(tweet_category_file, tweet_senti_file, '\t', 6)
+    sensiment_analyzer(tweet_category_file, tweet_senti_file, '\t', tweet_index)
