@@ -5,13 +5,7 @@ extract raw tweet and output "clean" tweets and a dictionary of words
 import csv
 from tweet_tokenizer import tokenize
 
-input_filename = "./data/CL_training.csv"
-
-output_filename = "./data/CL_refined_training.csv"
-vocab_filename = "./data/Tweets.vocab"
-tweet_index = 4
-
-def read_data(filename):
+def read_data(filename,tweet_index):
     all_rows=[]
     all_tokens=[]
     file_in1=open(filename,"r")
@@ -27,7 +21,7 @@ def read_data(filename):
         all_tokens.append(tokens)
     return all_tokens,all_rows
     
-def save_data(save_tweets,output_filename):
+def save_vocab_tweets(save_tweets,output_filename):
     f_out=open(output_filename,"w")
 
     wr = csv.writer(f_out,lineterminator='\n',delimiter='\t')
@@ -50,12 +44,3 @@ def make_vocab(refined_tweets,vocab_filename):
     for word in vocab:
         f_out.write(word+"\n")
     return
-    
-def main():
-    global input_filename,output_filename,vocab_filename
-    refined_tweets,save_tweets=read_data(input_filename)
-    save_data(save_tweets,output_filename)
-    make_vocab(refined_tweets,vocab_filename)
-    print "Created refined traning data and vocabulary file"
-    
-main()

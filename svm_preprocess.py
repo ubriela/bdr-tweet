@@ -9,20 +9,14 @@ import random
 import re
 from tweet_tokenizer import tokenize
 
-input_train_file="./data/CL_training.csv"
-input_test_file = "./data/tweets_hashtag.csv" # "./data/output/test.txt" #
-test_delimiter, test_text_index, test_informative_index = "\t", 2, 1
-
-train_file = "./data/Tweet_Train.txt"
-test_file = "./data/Tweet_Test.txt"
 
 """
 read vocab file and output a dictionary <word, word_index (i.e., line_number)>
 """
-def get_vocab():
+def get_vocab(vocab_file):
     c=[]
     vocab={}
-    input_file=open("./data/Tweets.vocab","r")
+    input_file=open(vocab_file,"r")
     for line in input_file:
         c.append(line.replace("\n",""))
     for i in xrange(0,len(c)):
@@ -30,40 +24,26 @@ def get_vocab():
     input_file.close()
     return vocab
 
-EmoticonLookupTable = "./data/SentStrength_Data/EmoticonLookupTable.txt"
-
-emoticons = []
-
-with open(EmoticonLookupTable) as f:
-    for line in f.readlines():
-        emoticon = line.split()[0]
-        emoticons.append(emoticon)
-
 """
 for each tweet, return a list of distict words and their frequencies
 """
-def read_Training_Tweets(filename,vocab):  
+def read_train_data(filename, vocab, labels_map, train_text_index, train_label_index, delimiter="\t"):
     
     file_in1=open(filename,"r")
-    datareader=csv.reader(file_in1, delimiter="\t")
+    datareader=csv.reader(file_in1, delimiter=delimiter)
     tokens=[] #
     
     for line in datareader:
-        informativeness = line[3]
-        if informativeness == "Related and informative":
-            tempList=['1']
-        elif informativeness == "Related - but not informative":
-            tempList=['-1']
-        else:
+        label = line[train_label_index]
+        if label not in labels_map:
+            print 'label does not exist', label
             continue
-        
+        tempList = [str(labels_map[label])]
         tempDict={} # <word_index, number of times the word appear in tweet>
-        x=tokenize(line[4])
+        x=tokenize(line[train_text_index])
         # for each word in tweet (x)
         for item in x:
             if len(item)>0 and len(item.strip('\'"?,.')) > 0:
-                # if item in emoticons:
-                #     print item, item.strip('\'"?,.')
                 if vocab[item] in tempDict.keys():
                     tempDict[vocab[item]]+=1
                 else:
@@ -86,24 +66,24 @@ def read_Training_Tweets(filename,vocab):
 Similar to read_Training_Tweets (for each tweet, return a list of distict words and their frequencies)
 but this function read test data and all tweets are informative
 """
-def read_Test_Tweets(filename,vocab):
+def read_test_data(filename, vocab, labels_map, test_text_index, test_label_index, delimiter='\t'):
     
     complete=[]
     for n in [filename]:
         
         y=open(n,"r")
-        datareader=csv.reader(y, delimiter=test_delimiter)
+        datareader=csv.reader(y, delimiter=delimiter)
         tokens=[]
         
         for line in datareader:
             if line==[]:
                 continue
             else:
-                informativeness = line[test_informative_index]
-                if informativeness == "YES":
-                    tempList = ['1']
-                else:
-                    tempList = ['-1']
+                label = line[test_label_index]
+                if label not in labels_map:
+                    print 'label does not exist', label
+                    continue
+                tempList = [str(labels_map[label])]
                 tempDict={}
                 # row=line[test_text_index]#.replace("\n"," ")
                 # row=re.sub(r"RT @\S+", "",row)
@@ -136,7 +116,7 @@ def read_Test_Tweets(filename,vocab):
 """
 output train and test data into two files
 """
-def save_data(train_data,test_data):
+def save_data(train_data,test_data,train_file,test_file):
 
     output_file=open(train_file,"w")
     for line in train_data:
@@ -147,13 +127,3 @@ def save_data(train_data,test_data):
     for line2 in test_data:
        output_file2.write(line2+"\n")
     output_file2.close()
-
-def preprocess(input_train_file, input_test_file):
-    Tweet_vocab=get_vocab()
-    train_Tweets=read_Training_Tweets(input_train_file,Tweet_vocab)
-    test_Tweets=read_Test_Tweets(input_test_file,Tweet_vocab)
-    
-    save_data(train_Tweets,test_Tweets)
-    print ("Prerocess train and test data to output two corresponding files in SVM format: " + train_file + "\t" + test_file)
-    
-preprocess(input_train_file, input_test_file)
