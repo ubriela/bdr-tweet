@@ -6,8 +6,11 @@ import numpy as np
 import re
 
 
-# k-fold cross-validation
+"""
+Split Ryan's data into two parts: TRAIN and TEST with k_fold cross validation
+"""
 def split_data_ryan(INPUT,TRAIN,TEST,k_fold = 5):
+    # k-fold cross-validation
     OUTPUT = './data/Ryan/10KLabeledTweets_formatted.txt'
     # properly format the data
     output = open(OUTPUT, 'w')
@@ -42,7 +45,9 @@ def split_data_ryan(INPUT,TRAIN,TEST,k_fold = 5):
         for line in data[test_set_count:]:
             train_output.write(line)
 
-
+"""
+Split CrisisLex's data into two parts: TRAIN and TEST with k_fold cross validation
+"""
 def split_data_cl(INPUT,TRAIN,TEST,k_fold = 5):
     # properly format the data
     test_output = open(TEST, 'w')
@@ -54,3 +59,33 @@ def split_data_cl(INPUT,TRAIN,TEST,k_fold = 5):
             test_output.write(line)
         for line in data[test_set_count:]:
             train_output.write(line)
+
+"""
+split both training and testing data into various files, one for each label
+"""
+def split_data_cl_label(FILE, prefix, labels):
+    data = {}
+    data_size = {}
+    with open(FILE) as f:
+        for line in f.readlines():
+            label = line.split('\t')[3]
+            tweet = line.split('\t')[4]
+            if label in labels.keys():
+                if label not in data:
+                    data[label] = tweet
+                    data_size[label] = 1
+                else:   # append
+                    data[label] = data[label] + tweet
+                    data_size[label] = data_size[label] + 1
+            else:
+                print "label does not exist", label
+    print data_size
+    for file, content in data.items():
+        f = open('./data/CrisisLex/' + prefix + '_' + labels[file] + '.txt', 'w')
+        f.write(content)
+        f.close()
+
+
+labels = {'Not related' : 'not_related', 'Related and informative' : 'informative', 'Related - but not informative' : 'not_informative', 'Not applicable' : 'not_applicable'}
+split_data_cl_label('./data/CrisisLex/training_tweets.txt', 'train', labels)
+split_data_cl_label('./data/CrisisLex/testing_tweets.txt', 'test', labels)
