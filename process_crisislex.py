@@ -19,25 +19,40 @@ def clean_line(row):
     row.replace('\t', ' ')
     return row
 
-
 # data = np.loadtxt(CrisisLexT6Folder + "/2012_Sandy_Hurricane/2012_Sandy_Hurricane-ontopic_offtopic.csv", dtype='str', delimiter=',', skiprows = 1)
-with open(CrisisLexT6Folder + "/2012_Sandy_Hurricane/2012_Sandy_Hurricane-ontopic_offtopic.csv") as f:
-    on_topic = open(CrisisLexT6Folder + "/2012_Sandy_Hurricane/on-topic.txt", "w")
-    off_topic = open(CrisisLexT6Folder + "/2012_Sandy_Hurricane/off-topic.txt", "w")
-    for line in f.readlines()[1:]:
-        vals = line.strip().split(',')
-        if len(vals) == 3:
-            if vals[2] == 'on-topic':
-                on_topic.write(vals[1].strip('\"') + "\n")
-            elif vals[2] == 'off-topic':
-                off_topic.write(vals[1].strip('\"') + "\n")
-        else:
-            length = len(vals)
-            # print length, line
+if False:
+    with open(CrisisLexT6Folder + "/2012_Sandy_Hurricane/2012_Sandy_Hurricane-ontopic_offtopic.csv") as f:
+        on_topic = open(CrisisLexT6Folder + "/2012_Sandy_Hurricane/on-topic.txt", "w")
+        off_topic = open(CrisisLexT6Folder + "/2012_Sandy_Hurricane/off-topic.txt", "w")
+        for line in f.readlines()[1:]:
+            vals = line.strip().split(',')
+            if len(vals) == 3:
+                if vals[2] == 'on-topic':
+                    on_topic.write(vals[1].strip('\"') + "\n")
+                elif vals[2] == 'off-topic':
+                    off_topic.write(vals[1].strip('\"') + "\n")
+            else:
+                length = len(vals)
+                # print length, line
 
-    on_topic.close()
-    off_topic.close()
+        on_topic.close()
+        off_topic.close()
 
+for file in glob.glob(CrisisLexT26Folder + "/*/*labeled.csv"):
+    with open(file) as f:
+        output_name = file.split('\\')[len(file.split('\\'))-2]
+        print output_name
+        output = open(CrisisLexT26Folder + '/' + output_name + '.txt', "w")
+        for line in f.readlines()[1:]:
+            vals = line.strip().split(',')
+            if len(vals) == 5:
+                output.write(vals[1].strip('\"') + "\n")
+            elif len(vals) > 5:
+                length = len(vals)
+                tweet = re.sub(r"\s+", " ", ','.join(vals[1:length - 3])).strip('\"')
+                output.write(tweet + "\n")
+
+        output.close()
 
 if False:
     all_labeled_data = []

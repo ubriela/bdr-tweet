@@ -21,7 +21,7 @@ import json
 
 # Converting the csv file to dataframe with column names.
 
-df = pd.read_csv("./data/CL_training.csv", encoding = "ISO-8859-1", delimiter="\t")
+df = pd.read_csv("./data/CrisisLex/CrisisLex27K.csv", encoding = "ISO-8859-1", delimiter="\t")
 my_columns = ["id", "keyword", "key", "choose_one", "text"]
 df.columns = my_columns
 

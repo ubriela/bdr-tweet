@@ -57,10 +57,11 @@ class LabeledLineSentence(object):
         return self.sentences
 
 # sources = {'./data/CrisisLex/test_not_related.txt':'TEST_NR', './data/CrisisLex/test_not_informative.txt':'TEST_NI', './data/CrisisLex/test_informative.txt':'TEST_IN', './data/CrisisLex/train_not_related.txt':'TRAIN_NR', './data/CrisisLex/train_not_informative.txt':'TRAIN_NI', './data/CrisisLex/train_informative.txt':'TRAIN_IN'}
-sources = {'./data/CrisisLex/data/CrisisLexT6/2012_Sandy_Hurricane/on-topic.txt':'ON', './data/CrisisLex/data/CrisisLexT6/2012_Sandy_Hurricane/off-topic.txt':'OFF'}
+# sources = {'./data/CrisisLex/data/CrisisLexT6/2012_Sandy_Hurricane/on-topic.txt':'ON', './data/CrisisLex/data/CrisisLexT6/2012_Sandy_Hurricane/off-topic.txt':'OFF'}
+sources = {'./data/CrisisLex/data/CrisisLexT26/2013_Colorado_floods.txt':'2012_Colorado_wildfires', './data/CrisisLex/data/CrisisLexT26/2013_Spain_train_crash.txt':'2012_Costa_Rica_earthquake'}
 sentences = LabeledLineSentence(sources)
 
-model = Doc2Vec(min_count=1, window=10, size=100, sample=1e-4, negative=5, workers=10)
+model = Doc2Vec(min_count=1, window=10, size=200, sample=1e-4, negative=5, workers=10)
 
 sentences_arr = sentences.to_array()
 model.build_vocab(sentences_arr)
@@ -70,4 +71,5 @@ for epoch in range(50):
     model.train(sentences.sentences_perm())
 
 # model.save('./data/CrisisLex/CrisisLex.d2v')
-model.save('./data/CrisisLex/2012_Sandy_Hurricane.d2v')
+# model.save('./data/CrisisLex/2012_Sandy_Hurricane.d2v')
+model.save('./data/CrisisLex/CrisisLex2.d2v')

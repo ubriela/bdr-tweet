@@ -28,7 +28,7 @@ DATASET = "cl"  # CrisisLex
 
 TRAIN, TEST= "./data/training_tweets.txt", "./data/testing_tweets.txt"
 if DATASET == 'cl':
-    INPUT = './data/CrisisLex27K.csv'
+    INPUT = './data/CrisisLex/CrisisLex27K.csv'
     split_data_cl(INPUT, TRAIN, TEST)
     labels_map = {'Related and informative': 1, 'Related - but not informative': -1}
 elif DATASET == 'ryan':
