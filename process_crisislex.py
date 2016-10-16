@@ -38,22 +38,6 @@ if False:
         on_topic.close()
         off_topic.close()
 
-for file in glob.glob(CrisisLexT26Folder + "/*/*labeled.csv"):
-    with open(file) as f:
-        output_name = file.split('\\')[len(file.split('\\'))-2]
-        print output_name
-        output = open(CrisisLexT26Folder + '/' + output_name + '.txt', "w")
-        for line in f.readlines()[1:]:
-            vals = line.strip().split(',')
-            if len(vals) == 5:
-                output.write(vals[1].strip('\"') + "\n")
-            elif len(vals) > 5:
-                length = len(vals)
-                tweet = re.sub(r"\s+", " ", ','.join(vals[1:length - 3])).strip('\"')
-                output.write(tweet + "\n")
-
-        output.close()
-
 if False:
     all_labeled_data = []
     for file in glob.glob(CrisisLexT26Folder + "/*/*labeled.csv"):
@@ -67,6 +51,24 @@ if False:
                     all_labeled_data.append('\t'.join([vals[0].strip('\"'), vals[length-3], vals[length-2], vals[length-1], re.sub(r"\s+", " ", ','.join(vals[1:length-3]))]))
 
     print 'Number of training tweets:', len(all_labeled_data)
+
+for file in glob.glob(CrisisLexT26Folder + "/*/*labeled.csv"):
+    with open(file) as f:
+        output_name = file.split('\\')[len(file.split('\\')) - 2]
+        print output_name
+        output = open(CrisisLexT26Folder + '/' + output_name + '.txt', "w")
+        for line in f.readlines()[1:]:
+            vals = line.strip().split(',')
+            if len(vals) == 5:
+                if vals[4].strip() == "Related and informative" and vals[2].strip() == "NGOs":
+                    output.write(vals[1].strip('\"') + "\n")
+            elif len(vals) > 5:
+                length = len(vals)
+                if vals[length - 1].strip() == "Related and informative" and vals[length - 3].strip() == "NGOs":
+                    tweet = re.sub(r"\s+", " ", ','.join(vals[1:length - 3])).strip('\"')
+                    output.write(tweet + "\n")
+
+        output.close()
 
 # for line in all_labeled_data:
 #     print line

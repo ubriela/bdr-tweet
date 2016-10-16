@@ -33,11 +33,10 @@ log.addHandler(ch)
 # model = Doc2Vec.load('./data/CrisisLex/2012_Sandy_Hurricane.d2v')
 model = Doc2Vec.load('./data/CrisisLex/CrisisLex2.d2v')
 
-
 # labels_count = {'TEST_NR':878, 'TEST_NI':1068, 'TEST_IN':3508, 'TRAIN_NR':1984, 'TRAIN_NI':6664, 'TRAIN_IN':13341}
 # labels_count = {'TEST_NR':878, 'TEST_NI':1068, 'TEST_IN':3508}
 # labels_count = {'ON':4803, 'OFF':3192}
-labels_count = {'2012_Colorado_wildfires':1000, '2012_Costa_Rica_earthquake':1000}
+labels_count = {'2012_Colorado_wildfires':36, '2012_Costa_Rica_earthquake':73}
 
 # labels = {'TEST_NR':-1, 'TEST_NI':1, 'TEST_IN':1, 'TRAIN_NR':-1, 'TRAIN_NI':0, 'TRAIN_IN':1}
 # labels = {'ON':1, 'OFF':0}

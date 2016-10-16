@@ -17,7 +17,7 @@ else:
     svm_classify = './lib/svm_classify'
 
 # PARAMETERS ##############################################
-DATASET = "cl"  # CrisisLex
+DATASET = "ryan"  # CrisisLex
 
 # merge crisislex datasets into one file ###############################
 # os.system("python process_crisislex.py")
@@ -30,7 +30,7 @@ TRAIN, TEST= "./data/training_tweets.txt", "./data/testing_tweets.txt"
 if DATASET == 'cl':
     INPUT = './data/CrisisLex/CrisisLex27K.csv'
     split_data_cl(INPUT, TRAIN, TEST)
-    labels_map = {'Related and informative': 1, 'Related - but not informative': -1}
+    labels_map = {'Not related': -1, 'Related and informative': 1, 'Related - but not informative': 1}
 elif DATASET == 'ryan':
     INPUT = './data/Ryan/10KLabeledTweets.txt'
     split_data_ryan(INPUT, TRAIN, TEST)
@@ -48,8 +48,6 @@ make_vocab(refined_tweets, vocab_filename)
 print "Created refined training data and vocabulary file"
 
 # prepare training and testing inputs ###############################
-# input_train_file="./data/CL_training.csv"
-# input_test_file = "./data/tweets_hashtag.csv" # "./data/output/test.txt" #
 test_text_index, test_label_index, train_text_index, train_label_index = 4, 3, 4, 3
 train_file, test_file, tweet_model = "./data/Tweet_Train.txt", "./data/Tweet_Test.txt", "./output/tweet.model"
 

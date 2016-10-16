@@ -87,5 +87,5 @@ def split_data_cl_label(FILE, prefix, labels):
 
 
 labels = {'Not related' : 'not_related', 'Related and informative' : 'informative', 'Related - but not informative' : 'not_informative', 'Not applicable' : 'not_applicable'}
-split_data_cl_label('./data/CrisisLex/training_tweets.txt', 'train', labels)
-split_data_cl_label('./data/CrisisLex/testing_tweets.txt', 'test', labels)
+split_data_cl_label('./data/training_tweets.txt', 'train', labels)
+split_data_cl_label('./data/testing_tweets.txt', 'test', labels)
