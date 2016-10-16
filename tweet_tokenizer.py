@@ -26,6 +26,7 @@ import htmlentitydefs
 import nltk.data
 tokenizer = nltk.data.load('nltk:tokenizers/punkt/english.pickle')
 from nltk.corpus import stopwords
+from nltk.tokenize import TweetTokenizer
 
 SlangLookupTable = "./data/SentStrength_Data/SlangLookupTable.txt"
 EmoticonLookupTable = "./data/SentStrength_Data/EmoticonLookupTable.txt"
@@ -163,10 +164,25 @@ def html2unicode(s):
 PUNCTS = set(string.punctuation)
 NUMBERS = set('0123456789')
 
+"""
+NLTK tokenizer
+"""
+def nltk_tokenize(s):
+    # Try to ensure unicode:
+    try:
+        s = unicode(s)
+    except UnicodeDecodeError:
+        s = str(s).encode('string_escape')
+        s = unicode(s)
+    # Fix HTML character entitites:
+    s = html2unicode(s)
 
+    tknzr = TweetTokenizer(strip_handles=False, reduce_len=True)
+    words = tknzr.tokenize(s)
+    return words
 
 """
-tokenize a string
+custom tokenizer
 """
 def tokenize(s, preserve_case=False):
     s.replace("\n", " ")                                # merge multiple lines of tweets if any
