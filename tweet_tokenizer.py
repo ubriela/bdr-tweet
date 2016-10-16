@@ -164,9 +164,7 @@ def html2unicode(s):
 PUNCTS = set(string.punctuation)
 NUMBERS = set('0123456789')
 
-"""
-NLTK tokenizer
-"""
+
 def nltk_tokenize(s):
     # Try to ensure unicode:
     try:
@@ -181,33 +179,43 @@ def nltk_tokenize(s):
     words = tknzr.tokenize(s)
     return words
 
-"""
-custom tokenizer
-"""
+tokenizer = "NLTK"
+
 def tokenize(s, preserve_case=False):
-    s.replace("\n", " ")                                # merge multiple lines of tweets if any
-    s = re.sub('[\s]+|&amp;', ' ', s)                   # Remove additional white spaces
-    s = re.sub(r'https?:\/\/.*\/[a-zA-Z0-9]*', '', s)   # Remove hyperlinks
     # Try to ensure unicode:
     try:
         s = unicode(s)
     except UnicodeDecodeError:
         s = str(s).encode('string_escape')
         s = unicode(s)
+
     # Fix HTML character entitites:
     s = html2unicode(s)
 
-    # s = s.strip().decode("ascii", "ignore").encode("ascii")   # Removing non ASCII from corpus
 
-    s = nltk.tokenize.casual.remove_handles(s)          # remove twitter username handles from text
-    # Tokenize:
-    words = tokens_re.findall(s)
-    # print s
-    # print words
-    # Possible alter the case, but avoid changing emoticons like :D into :d:
-    if not preserve_case:
-        words = map((lambda x: x[0] if emoticon_re.search(x[0]) else x[0].lower()), words)
+    if tokenizer == "NLTK":
+        """
+        NLTK tokenizer
+        """
+        tknzr = TweetTokenizer(strip_handles=False, reduce_len=True)
+        words = tknzr.tokenize(s)
+    elif tokenizer == "Custom":
+        s.replace("\n", " ")  # merge multiple lines of tweets if any
+        s = re.sub('[\s]+|&amp;', ' ', s)  # Remove additional white spaces
+        s = re.sub(r'https?:\/\/.*\/[a-zA-Z0-9]*', '', s)  # Remove hyperlinks
 
-    words = [w for w in words if not (w.strip() in stop_words or w.strip() in PUNCTS) and not w.strip().isnumeric()] # remove stop words AND punctuations
+        """
+        custom tokenizer
+        """
+        s = nltk.tokenize.casual.remove_handles(s)          # remove twitter username handles from text
+        # Tokenize:
+        words = tokens_re.findall(s)
+        # print s
+        # print words
+        # Possible alter the case, but avoid changing emoticons like :D into :d:
+        if not preserve_case:
+            words = map((lambda x: x[0] if emoticon_re.search(x[0]) else x[0].lower()), words)
+
+        words = [w for w in words if not (w.strip() in stop_words or w.strip() in PUNCTS) and not w.strip().isnumeric()] # remove stop words AND punctuations
 
     return words
