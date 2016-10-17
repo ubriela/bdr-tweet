@@ -60,6 +60,9 @@ def split_data_cl(INPUT,TRAIN,TEST,k_fold = 5):
         for line in data[test_set_count:]:
             train_output.write(line)
 
+    test_output.close()
+    train_output.close()
+
 """
 split both training and testing data into various files, one for each label
 """
@@ -87,5 +90,5 @@ def split_data_cl_label(FILE, prefix, labels):
 
 
 labels = {'Not related' : 'not_related', 'Related and informative' : 'informative', 'Related - but not informative' : 'not_informative', 'Not applicable' : 'not_applicable'}
-split_data_cl_label('./data/training_tweets.txt', 'train', labels)
-split_data_cl_label('./data/testing_tweets.txt', 'test', labels)
+# split_data_cl_label('./data/training_tweets.txt', 'train', labels)
+# split_data_cl_label('./data/testing_tweets.txt', 'test', labels)

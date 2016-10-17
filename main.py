@@ -26,7 +26,7 @@ DATASET = "ryan"  # CrisisLex
 # prepare training and testing data ###############################
 
 
-TRAIN, TEST= "./data/CrisisLex/training_tweets.txt", "./data/CrisisLex/testing_tweets.txt"
+TRAIN, TEST= "./data/training_tweets.txt", "./data/testing_tweets.txt"
 if DATASET == 'cl':
     INPUT = './data/CrisisLex/CrisisLex27K.csv'
     split_data_cl(INPUT, TRAIN, TEST)
