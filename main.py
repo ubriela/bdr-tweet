@@ -25,6 +25,10 @@ DATASET = "ryan"  # CrisisLex
 
 # prepare training and testing data ###############################
 
+#print os.system("python word2vec.py ./data/CrisisLex/CrisisLex27K.csv 1000")
+#print os.system("python word2vec_fast.py ./data/CrisisLex/CrisisLex27K.csv 1000")
+print os.system("python word2vec_fast.py ./data/Ryan/10KLabeledTweets_confidence.csv 335")
+
 
 TRAIN, TEST= "./data/training_tweets.txt", "./data/testing_tweets.txt"
 if DATASET == 'cl':

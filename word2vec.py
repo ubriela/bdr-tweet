@@ -11,24 +11,46 @@ from sklearn.metrics import roc_curve, auc
 from sklearn import metrics
 from scipy import interp
 import matplotlib.pyplot as plt
-import HTMLParser
 import sys
 import json
 
+#These are special modules that I built to streamline parsing, tokenization and the LSI step
+
+from latent_semantic_indexing import latent_semantic_indexer
+
 
 #df = pd.read_csv("disaster_tweets.csv", encoding = "ISO-8859-1")
-#print df.columns
+#print df.columnas
 
 # Converting the csv file to dataframe with column names.
 
-df = pd.read_csv("./data/CrisisLex/CrisisLex27K.csv", encoding = "ISO-8859-1", delimiter="\t")
-my_columns = ["id", "keyword", "key", "choose_one", "text"]
-df.columns = my_columns
+if sys.argv[1] == "./data/CrisisLex/CrisisLex27K.csv":
+    dimensions = int(sys.argv[2])
+    df = pd.read_csv(sys.argv[1], encoding="ISO-8859-1", delimiter="\t")
+    my_columns = ["id", "keyword", "key", "choose_one", "text"]
+    df.columns = my_columns
+    df['choose_one:confidence'] = df['choose_one'].map(lambda x: 1 if x == "Not related" or x == "Related and informative" else 0.5)
+    df['choose_one'] = df['choose_one'].map(lambda x: "Relevant" if x == "Related and informative" or x == "Related - but not informative" else "Not Relevant")
+
+    #load in the stored low_2_high_map
+    stem_map_high = json.load(open('./data/word2vec/word_2_vec_token_mappings/crisislex26_stem_map_high.json'))
+    stem_map_low = json.load(open('./data/word2vec/word_2_vec_token_mappings/crisislex26_stem_map_low.json'))
+    low_2_high_map = json.load(open('./data/word2vec/word_2_vec_token_mappings/crisislex26_low_2_high_map.json'))
+
+elif sys.argv[1] == "./data/Ryan/10KLabeledTweets_confidence.csv":
+    df = pd.read_csv(sys.argv[1], encoding="ISO-8859-1")
+    dimensions = int(sys.argv[2])
+    #load in the stored low_2_high_map
+    stem_map_high = json.load(open('./data/word2vec/word_2_vec_token_mappings/ryan_stem_map_high.json'))
+    stem_map_low = json.load(open('./data/word2vec/word_2_vec_token_mappings/ryan_stem_map_low.json'))
+    low_2_high_map = json.load(open('./data/word2vec/word_2_vec_token_mappings/ryan_low_2_high_map.json'))
+
+
+    #dictionary = corpora.Dictionary.load('./model/model.dict')
+    #print dictionary
 
 # Creating a column name called choose_one:confidence and assigning 1 or 0.5 score to it.
 
-df['choose_one:confidence'] = df['choose_one'].map(lambda x: 1 if x == "Not related" or x == "Related and informative" else 0.5)
-df['choose_one'] = df['choose_one'].map(lambda x: "Related" if x == "Related and informative" or x == "Related - but not informative" else "Not related")
 
 # Only keep the columns relevant to this work
 df = df[["choose_one", "text", "choose_one:confidence"]]
@@ -226,7 +248,7 @@ def clean_and_tokenize(df):
     #go through and convert or remove any remaining utf8 characters
     #df["text"] = df["text"].apply(lambda(tweet): tweet.decode("utf8").encode('ascii',  errors='replace'))
     #clean up any html tags
-    html_parser = HTMLParser.HTMLParser()
+    #html_parser = HTMLParser.HTMLParser()
     #df["text"] = df["text"].apply(html_parser.unescape)
     #split text on hypenations
     #df["text"] = df["text"].apply(lambda(tweet): tweet.replace("-", " "))
@@ -254,19 +276,6 @@ def clean_and_tokenize(df):
     return df
 
 df = clean_and_tokenize(df)
-
-tweet_num = 3032 #5000
-print "Original:"
-print df["text"][tweet_num] + "\n"
-print "Tokenized:"
-print df["text_tokenized_stemmed"][tweet_num]
-
-
-tweet_num = 8
-print "Original:"
-print df["text"][tweet_num] + "\n"
-print "Tokenized:"
-print df["text_tokenized_stemmed"][tweet_num]
 
 # Loading the google word2vec dataset into the model
 w2v_model = models.word2vec.Word2Vec.load_word2vec_format('./data/word2vec/GoogleNews-vectors-negative300.bin.gz', binary=True)
@@ -394,10 +403,7 @@ def is_word(token):
 #    json.dump(stem_map_low, fp)
 
 
-#load in the stored low_2_high_map
-stem_map_high = json.load(open('./data/word2vec/word_2_vec_token_mappings/stem_map_high.json'))
-stem_map_low = json.load(open('./data/word2vec/word_2_vec_token_mappings/stem_map_low.json'))
-low_2_high_map = json.load(open('./data/word2vec/word_2_vec_token_mappings/low_2_high_map.json'))
+
 
 #create a new column of tweets that are now mapped according to word2vec
 df["text_tokenized_stemmed_w2v"] = df["text_tokenized_stemmed"].apply(lambda x: map_low_frequency_tokens(x, low_2_high_map))
@@ -433,7 +439,7 @@ def make_dictionary_and_corpus(df_dictionary, df_corpus):
     corpus_tfidf = tfidf[corpus]
 
     # return a tuple with the dictionary and corpus
-    return (dictionary, corpus_tfidf, corpus)
+    return (dictionary, corpus_tfidf, corpus, tfidf)
 
 
 # clean the features for use in dataframe
@@ -465,7 +471,7 @@ def latent_semantic_analysis(df, dictionary, corpus_tfidf, dimensions, return_to
 
     # return the new features dataframe devoid of columns that contain nothing
     if return_topics:
-        return (df_merged.fillna(0), lsi.print_topics(n_topics, num_words=n_words))
+        return (df_merged.fillna(0), lsi.print_topics(n_topics, num_words=n_words), lsi)
     else:
         return df_merged.fillna(0)
 
@@ -477,8 +483,10 @@ df_filtered = df[["choose_one","text_tokenized_stemmed","text_tokenized_stemmed_
 
 #generate the dictionary and the corpus for our tweets
 tweet_type = "text_tokenized_stemmed_w2v"
-dictionary, corpus_tfidf, corpus_bow = make_dictionary_and_corpus(df_full[tweet_type], df_filtered[tweet_type])
+dictionary, corpus_tfidf, corpus_bow, tfidf = make_dictionary_and_corpus(df_full[tweet_type], df_filtered[tweet_type])
 
+dictionary.save('./model/crisis_model.dict')
+tfidf.save('./model/crisis_model.tfidf')
 
 print "# total tweets: %d" % len(df_full)
 print "# high certainty tweets: %d" % len(df_filtered)
@@ -530,7 +538,7 @@ scores_df.to_csv("./output/score_data.csv")
 
 
 #things to plot
-plt.plot(dimensions_used, scores_absolute, c="r", linestyle = '-', linewidth = 2, label = "Train")
+'''plt.plot(dimensions_used, scores_absolute, c="r", linestyle = '-', linewidth = 2, label = "Train")
 plt.plot(dimensions_used, scores_cv, c="b", linestyle = '-', linewidth = 2, label = "8-fold cross validation")
 
 #backround grid details
@@ -569,7 +577,7 @@ frame.set_edgecolor('black')
 
 plt.savefig('./output/cross_validation.png', bbox_inches='tight')
 
-plt.show()
+plt.show()'''
 
 
 
@@ -582,10 +590,12 @@ print (max_score, max_d)
 
 
 
-dimensions = 1000
+#dimensions = 300
 print len(dictionary)
 print len(df_filtered)
-df_lsi_features, topics = latent_semantic_analysis(df_filtered, dictionary, corpus_tfidf, dimensions, True, 15, 10)
+df_lsi_features, topics, lsi = latent_semantic_analysis(df_filtered, dictionary, corpus_tfidf, dimensions, True, 15, 10)
+
+lsi.save('./model/crisis_model.lsi')
 
 
 # so a dimensionality of ~100 seems perfectly fine... lets use this dimensionality and create a k-fold ROC curve
@@ -596,7 +606,7 @@ def k_fold_roc(df, dim, cross_val_num):
     # create X and y data but need as a numpy array for easy cv ROC implementation
     # also need to usue dummies for the ROC curve so convert them en route
     X = pd.DataFrame.as_matrix(df[[i for i in range(dim)]])
-    y = pd.get_dummies(df["choose_one"])["Related"]
+    y = pd.get_dummies(df["choose_one"])["Relevant"]
 
     # create the cross validation entity to extract the dat from sequentially
     cv = cross_validation.StratifiedKFold(y, n_folds=cross_val_num)
@@ -627,7 +637,7 @@ cross_val_num = 8
 roc_data = k_fold_roc(df_lsi_features, dimensions, cross_val_num)
 
 
-# color palette
+'''# color palette
 # These are the "Tableau 20" colors as RGB.
 tableau20 = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120),
              (44, 160, 44), (152, 223, 138), (214, 39, 40), (255, 152, 150),
@@ -685,7 +695,7 @@ frame.set_edgecolor('black')
 
 plt.savefig('./output/roc.png', bbox_inches='tight')
 
-plt.show()
+plt.show()'''
 
 
 #make the X and y
@@ -705,7 +715,7 @@ y_pred = model.predict(X_test)
 #various "fitness" metrics
 print "Train accuracy: %f \n" % model.score(X_train, y_train)
 print "Test accuracy: %f \n" % model.score(X_test, y_test)
-print "F1 score: %f \n" % metrics.f1_score(y_test, y_pred, labels=None, pos_label='Related', average='binary', sample_weight=None)
+print "F1 score: %f \n" % metrics.f1_score(y_test, y_pred, labels=None, pos_label='Relevant', average='binary', sample_weight=None)
 
 #confusion matrix
 cm = metrics.confusion_matrix(y_test, model.predict(X_test))
@@ -714,3 +724,10 @@ print "-Legend"
 print np.array([['True "not disaster"', 'False "disaster"'],['False "not disaster"', 'True "disaster"']])
 print "\n-Prediction"
 print cm
+
+print "\n-Precision"
+print cm[1][1]/ ((cm[1][1] + cm[0][1])*1.0)
+
+print "\n-Recall"
+print cm[1][1]/ ((cm[1][0]+cm[1][1])*1.0)
+print "\n"
