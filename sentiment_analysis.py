@@ -6,7 +6,7 @@ import sys
 import os
 import csv
 
-# tweet_category_file = "./output/tweet.category.csv"
+#tweet_category_file = "./output/tweet.category.csv"
 tweet_category_file = "./data/election_neg.txt"
 
 tweet_senti_file = "./output/election_senti_neg.csv"
