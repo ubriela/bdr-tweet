@@ -29,11 +29,7 @@ DATASET = "ryan"  # CrisisLex
 #print os.system("python word2vec_fast.py ./data/CrisisLex/CrisisLex27K.csv 1000")
 #print os.system("python word2vec_fast.py ./data/Ryan/10KLabeledTweets_confidence.csv 335")
 
-
 print os.system("python prediction_word2vec.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 ./data/earthquake_sentiment/2014-08-24_06.txt ./data/earthquake_sentiment/logistic_pred_output.txt ./data/earthquake_sentiment/output.txt 0")
-
-
-
 
 TRAIN, TEST= "./data/training_tweets.txt", "./data/testing_tweets.txt"
 if DATASET == 'cl':

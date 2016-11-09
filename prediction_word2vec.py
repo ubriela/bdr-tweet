@@ -16,7 +16,6 @@ import csv
 import shlex
 import subprocess
 
-
 word2vec_flag = 0
 model_flag = 0
 
@@ -383,7 +382,6 @@ run senstiment analysis for a file, including a set of tweets
 each line of input file is a tweet's information
 tweet_index is the index of the text in each line
 """
-
 def sensiment_analyzer(tweet_input, tweet_output, delimiter=',', tweet_index=0):
     moods=[]
     qw = 0
@@ -408,7 +406,6 @@ def sensiment_analyzer(tweet_input, tweet_output, delimiter=',', tweet_index=0):
                         arr.append(a[i])
                     a = []
                     a = arr
-
 
                 res=SentiStrength(a[tweet_index])
                 mood = int(res.split()[2])
