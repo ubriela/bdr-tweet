@@ -453,16 +453,16 @@ import datetime
 s = "2014-08-24 06:00:00"
 s_time = time.mktime(datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S").timetuple())
 arr = []
-for k in xrange(1,23):
+for k in xrange(1,8):
     pos = 0
     neg = 0
     total = 0
-    set_time = s_time + k*3600
+    set_time = s_time + k*10800
     with open("./data/state_id_2014-08-24/output/2014-08-24_sent.txt") as f2:
         for i in f2:
             a = [x.strip() for x in i.split(',')]
             t = time.mktime(datetime.datetime.strptime(a[1], "%Y-%m-%d %H:%M:%S").timetuple())
-            if set_time > int(t) and int(t) > set_time - 3600:
+            if set_time > int(t) and int(t) > set_time - 10800:
                 if int(a[5]) == -1:
                     neg += 1
                 elif int(a[5]) == 1:
@@ -471,7 +471,7 @@ for k in xrange(1,23):
         if pos == 0:
             arr.append(0)
         else:
-            arr.append(neg / ((pos) * 1.0))
+            arr.append(neg / ((pos + neg) * 1.0))
 
         print neg, pos, total
 import matplotlib.pyplot as plt
