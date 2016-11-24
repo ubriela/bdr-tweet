@@ -15,17 +15,25 @@ import time
 # import traceback
 # third-party: `pip install tweepy`
 import tweepy
+from array import *
 
 # global logger level is configured in main()
 Logger = None
 
-TWEET_PATH = "state_id_2014-08-25/*"
+TWEET_PATH = "./data/state_id_2014-08-24/2014-08-31/*"
+
+county_array = [6075, 6055, 6041, 6033, 6097, 6113, 6095, 6011, 6013, 6001, 6081]
 
 # Generate your own at https://apps.twitter.com/app
-CONSUMER_KEY = 'VIlDdi6LKAjGJxUhsxZNc1P1t'
-CONSUMER_SECRET = 'oh6dwllSvDszpxp100hZWs9jLrNnRzFw8ixgtIlzOlrjOGjfG5'
-OAUTH_TOKEN = '573560865-y1IBXNelm6YbmMeS4E6vSbbOgng7cSlNIGfLp1sW'
-OAUTH_TOKEN_SECRET = 'Snw836BTOUDVy56Tg6o3IVtjkZwyUUtfosIhzNEwnHRSx'
+#CONSUMER_KEY = 'VIlDdi6LKAjGJxUhsxZNc1P1t'
+#CONSUMER_SECRET = 'oh6dwllSvDszpxp100hZWs9jLrNnRzFw8ixgtIlzOlrjOGjfG5'
+#OAUTH_TOKEN = '573560865-y1IBXNelm6YbmMeS4E6vSbbOgng7cSlNIGfLp1sW'
+#OAUTH_TOKEN_SECRET = 'Snw836BTOUDVy56Tg6o3IVtjkZwyUUtfosIhzNEwnHRSx'
+
+CONSUMER_KEY = 'jQck5XQ2zC1RTM05724QpeWmA'
+CONSUMER_SECRET = 'CZs95zlrnhAemvsFj760tK3ZD2at7YrRZt7kgU91RzeDdDObmq'
+OAUTH_TOKEN = '3028433558-noFZLHJl1KU0lxEm0hjeQKhpFvFldO5sDlTsSv7'
+OAUTH_TOKEN_SECRET = '4O0y26ViLqzYWlYlqLece4Rz4EaTeTFi9SE6Zgqk38xJZ'
 
 def get_tweet_id(line):
     '''
@@ -95,23 +103,28 @@ def get_tweets_bulk(twapi, idfilepath):
     '''
     # process IDs from the file
     tweet_ids = list()
-    parts = idfilepath.split('.')
-    filepath = parts[0][:-3] + '.txt'
-    file_out = open(filepath, 'w')
-    with open(idfilepath, 'rb') as idfile:
-        for line in idfile:
-            tweet_id = get_tweet_id(line)
-            Logger.debug('Fetching tweet for ID %s', tweet_id)
-            # API limits batch size to 100
-            if len(tweet_ids) < 100:
-                tweet_ids.append(tweet_id)
-            else:
-                get_tweet_list(twapi, tweet_ids, file_out)
-                tweet_ids = list()
-    # process rump of file
-    if len(tweet_ids) > 0:
-        get_tweet_list(twapi, tweet_ids, file_out)
-    file_out.close()
+    parts = idfilepath.split('\\')
+    county = parts[1].split('_')
+    if int(county[1][1:]) in county_array:
+        county_array.remove(int(county[1][1:]))
+        #filepath = parts[0][:-3] + '.txt'
+        filepath = "./data/state_id_2014-08-25/output/"+parts[1]
+
+        file_out = open(filepath, 'w')
+        with open(idfilepath, 'rb') as idfile:
+            for line in idfile:
+                tweet_id = get_tweet_id(line)
+                Logger.debug('Fetching tweet for ID %s', tweet_id)
+                # API limits batch size to 100
+                if len(tweet_ids) < 100:
+                    tweet_ids.append(tweet_id)
+                else:
+                    get_tweet_list(twapi, tweet_ids, file_out)
+                    tweet_ids = list()
+        # process rump of file
+        if len(tweet_ids) > 0:
+            get_tweet_list(twapi, tweet_ids, file_out)
+        file_out.close()
 
 def usage():
     print('Usage: get_tweets_by_id.py [options] folder/file')
@@ -141,7 +154,7 @@ def main(args):
     idfile = args[0]
     if not os.path.isfile(idfile):
         for file in glob.glob(TWEET_PATH):
-            print ("parsing " +  str(file))
+            #print ("parsing " +  str(file))
             parse_one_file(file, bulk)
     else:   # this is a file
         parse_one_file(idfile, bulk)
@@ -159,4 +172,5 @@ def parse_one_file(idfile, bulk):
         get_tweets_single(api, idfile)
 
 if __name__ == '__main__':
+    #print (sys.argv[1:])
     main(sys.argv[1:])
