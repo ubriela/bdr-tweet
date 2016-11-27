@@ -71,7 +71,7 @@ for j in day:
 
     final_output_file = "./data/state_id_2014-08-24/output/2014-08-"+str(j)+"_sent.txt"
 
-    type = int(sys.argv[3])
+    type = int(sys.argv[3])     # type = 1 means filter by classification; otherwise, filter by hashtag
 
 
     if type == 1:
@@ -337,14 +337,14 @@ for j in day:
         print cm[1][1] / ((cm[1][0] + cm[1][1]) * 1.0)
         print "\n"
 
-    else:
+    else:   # filter disaster-related tweets using hashtags
 
         import re
 
         r = re.compile(
             r'napaearthquake | earthquake | quake | southnapaquake | napa | napaquake | americancanyon  | earthquakeamericancanyon | bayareaquake | sfearthquake | naturaldisaster | earthquakeamericancanyon',
             flags=re.I | re.X)
-        count = 0
+        disaster_tweets_count = 0
         with open(input_file) as f:
             with open(output_file, "wb") as f2:
                 for line in f:
@@ -366,8 +366,8 @@ for j in day:
                     if re.search(r, a[0]):
                         # print a[0]
                         f2.write(', '.join(a) + '\n')
-                        count += 1
-        print "Senti Number", count
+                        disaster_tweets_count += 1
+        print "Disaster related tweets: ", disaster_tweets_count
 
 
 
@@ -439,6 +439,10 @@ for j in day:
 
     sensiment_analyzer(output_file, final_output_file, ',', 0)
 
+
+"""
+Daily plot
+"""
 import matplotlib.pyplot as plt
 #plt.plot([0.43, 0.39, 0.42, 0.23, 0.17, 0.13, 0.17, 0.24])
 plt.plot(neg_ratio)
@@ -447,6 +451,10 @@ plt.xlabel('day')
 plt.show()
 
 
+
+"""
+Hourly plot
+"""
 import time
 import datetime
 

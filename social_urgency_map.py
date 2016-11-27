@@ -60,7 +60,7 @@ def filter_tweets(min_lat, min_lon, max_lat, max_lon):
 def read_shakemap_xml(url='file:///C:/Users/ubriela/git/tweet/data/usgs/napa/grid.xml'):
     u = urllib.urlopen(url)
     # compute urgency map
-    data = u.read()
+    data = u.read()  0
     root = ET.fromstring(data)
     for child in root.getchildren():
         if debug:
