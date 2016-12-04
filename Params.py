@@ -33,7 +33,7 @@ class Params(object):
 
     def __init__(self, seed, x_min = None, y_min = None, x_max = None, y_max = None):
         self.Seed = seed
-        self.minPartSize = 2 ** 4  # minimum number of data points in a leaf node
+        self.minPartSize = 2 ** 5  # minimum number of data points in a leaf node
         #
         # self.resdir = ""
         self.x_min, self.y_min, self.x_max, self.y_max = x_min, y_min, x_max, y_max

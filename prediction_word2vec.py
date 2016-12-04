@@ -15,12 +15,16 @@ from sklearn import svm
 import csv
 import shlex
 import subprocess
+from word2vec_sentifier import train, predict
 
 word2vec_flag = 0
 model_flag = 0
 day = [24,25,26,27,28,29,30,31]
 
+
 neg_ratio = []
+
+classifier = train()
 
 for j in day:
     if sys.argv[1] == "./data/CrisisLex/CrisisLex27K.csv":
@@ -371,15 +375,15 @@ for j in day:
 
 
 
-    def SentiStrength(tweet):
-        #open a subprocess using shlex to get the command line string into the correct args list format
-        p = subprocess.Popen(shlex.split("java -jar SentiStrength.jar stdin sentidata data/SentStrength_Data/ trinary"),stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        #communicate via stdin the string to be rated. Note that all spaces are replaced with +
-        #stdout_text, stderr_text = p.communicate(tweet.replace(" ", "+").encode())
-        stdout_text, stderr_text = p.communicate(tweet.replace(" ", "+"))
-        #remove the tab spacing between the positive and negative ratings. e.g. 1    -5 -> 1-5
-        stdout_text = stdout_text.rstrip().decode().replace("\t","")
-        return stdout_text
+    # def SentiStrength(tweet):
+    #     #open a subprocess using shlex to get the command line string into the correct args list format
+    #     p = subprocess.Popen(shlex.split("java -jar SentiStrength.jar stdin sentidata data/SentStrength_Data/ trinary"),stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    #     #communicate via stdin the string to be rated. Note that all spaces are replaced with +
+    #     #stdout_text, stderr_text = p.communicate(tweet.replace(" ", "+").encode())
+    #     stdout_text, stderr_text = p.communicate(tweet.replace(" ", "+"))
+    #     #remove the tab spacing between the positive and negative ratings. e.g. 1    -5 -> 1-5
+    #     stdout_text = stdout_text.rstrip().decode().replace("\t","")
+    #     return stdout_text
 
 
     """
@@ -389,7 +393,7 @@ for j in day:
     """
 
     def sensiment_analyzer(tweet_input, tweet_output, delimiter=',', tweet_index=0):
-        moods=[]
+        moods=[]    # what is it for?
         qw = 0
         count_pos = 0
         count_neg = 0
@@ -415,8 +419,9 @@ for j in day:
                         a = []
                         a = arr
 
-                    res=SentiStrength(a[tweet_index])
-                    mood = int(res.split()[2])
+                    # res=SentiStrength(a[tweet_index])
+                    sentiment = predict(classifier, [a[tweet_index]])
+                    mood = int(sentiment[0])
                     moods.append(mood)
                     if mood == -1:
                         count_neg += 1

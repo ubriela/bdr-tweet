@@ -7,6 +7,11 @@ from scipy.stats import stats
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import xml.etree.ElementTree as ET
+import csv
+import time
+import datetime
+import calendar
+from Utils import distance
 
 from Quad_standard import Quad_standard
 from Params import Params
@@ -50,8 +55,8 @@ social_urgency_map = np.matrix(np.zeros(shape=(LAT_SIZE, LON_SIZE, 1)))
 
 # file = "./data/gesis/state_id_2014-08-24/2014-08-24_06.txt"
 # file_out = "./data/earthquake_sentiment/2014-08-24_06.txt"
-file = "./data/gesis/1days.txt"
-file_out = "./data/gesis/1days_filtered.txt"
+file = "./data/gesis/7days_new.txt"
+file_out = "./data/gesis/7days_others.txt"
 
 """
 filter only tweets in a region, output tweets to another file
@@ -79,6 +84,38 @@ def filter_tweets(min_lat, min_lon, max_lat, max_lon):
                 if min_lat <= lat <= max_lat and min_lon <= lon <= max_lon:
                     f2.write(', '.join(a) + '\n')
     # filter_data = np.all([min_lat <= data[:,0], data[:,0] <= max_lat, min_lon <= data[:,1],  data[:,1]<= max_lon], axis=0)
+
+def extract_tweets(tweet_input, tweet_output, delimiter=',', tweet_index=0):
+    # data = np.loadtxt('./model/word2vec-sentiments-master/labels.txt')
+    # j = 0
+    with open(tweet_input, 'rU') as f:
+        with open(tweet_output, "wb") as f2:
+            rd = csv.reader(f, delimiter=delimiter)
+            for a in rd:
+                arr = []
+                # a = [x.strip() for x in line.split(',')]
+
+                if len(a) > 6:
+                    st = ""
+                    for i in xrange(0, len(a) - 5):
+                        if i == len(a) - 6:
+                            st += a[i]
+                        else:
+                            st += a[i] + ", "
+                    arr.append(st)
+                    for i in xrange(len(a) - 5, len(a)):
+                        arr.append(a[i])
+                    a = []
+                    a = arr
+
+                # res=SentiStrength(a[tweet_index])
+                # f2.write(a[tweet_index] + "\n")
+                # f2.write(a[0] + ',' + a[1] + ',' + a[2] + ',' + a[3] + ',' + a[4] + ',' + str(int(data[j])) + "\n")
+                # j = j + 1
+                t = calendar.timegm(datetime.datetime.strptime(a[1].strip(), "%Y-%m-%d %H:%M:%S").timetuple())
+                d = distance(float(a[3]), float(a[4]), 38.2414392,-122.3128157)
+                f2.write(str(a[1])+ '\t' + str(t) + '\t' + str(int(a[2]))  + '\t' + str(float(a[3])) + '\t' + str(float(a[4])) + '\t' + str(int(a[5])) + '\t' + str(d) + '\n')
+
 
 # 'http://earthquake.usgs.gov/archive/product/shakemap/nc72282711/nc/1431987323474/download/grid.xml'
 def read_shakemap_xml(url='file:///C:/Users/ubriela/git/tweet/data/usgs/napa/grid.xml'):
@@ -139,6 +176,8 @@ def read_social_map(file='./data/earthquake_sentiment/output.txt'):
 # filter_tweets(min_lat - lat_spacing, min_lon - lon_spacing, max_lat, max_lon)
 # print os.system("python prediction_word2vec.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 ./data/earthquake_sentiment/2014-08-24_06.txt ./data/earthquake_sentiment/logistic_pred_output.txt ./data/earthquake_sentiment/output.txt 0")
 
+
+
 # read_shakemap_xml()
 dyfi_data = read_dyfi_map()
 tweet_data = read_social_map()
@@ -165,9 +204,11 @@ def data_readin(p):
     p.tweet_data, p.dyfi_data = tweet_data, dyfi_data
     return tweet_locs
 
+# content of tweets
+extract_tweets(file, file_out)
 # locations of tweets
-param = Params(1000, 37.382166, -123.561700, 39.048834, -121.061700)
-tweet_locs = data_readin(param)
+# param = Params(1000, 37.382166, -123.561700, 39.048834, -121.061700)
+# tweet_locs = data_readin(param)
 
 # tree = Quad_standard(tweet_locs, param)
 # tree.buildIndex()

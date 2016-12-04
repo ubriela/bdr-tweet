@@ -22,4 +22,5 @@ log/
 data/
 test/
 model/
-log.
+log/
+graph/

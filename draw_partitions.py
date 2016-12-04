@@ -108,4 +108,4 @@ if __name__ == '__main__':
 
     ax.grid()
     # ax.axis('equal')
-    savefig('graph.png', format='png', dpi=400)
+    savefig('./graph/graph.png', format='png', dpi=400)

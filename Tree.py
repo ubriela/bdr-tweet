@@ -57,7 +57,7 @@ class Tree(object):
             # zero_tweets = curr.n_data[2, :].transpose().tolist().count(0)
             total_tweets = curr.n_data.shape[1]
 
-            if neg_tweets > 5:
+            if neg_tweets > 15:
                 ratio = (neg_tweets + 0.0) / (total_tweets)
                 center = curr.center()
                 print distance(center[0], center[1], self.param.epicenter[0], self.param.epicenter[1]), '\t', ratio
