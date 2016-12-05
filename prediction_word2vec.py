@@ -11,72 +11,83 @@ import sys
 import json
 from filter_new import clean_and_tokenize
 import os.path
+import glob
 from sklearn import svm
 import csv
+import re
+import os
 import shlex
 import subprocess
-from word2vec_sentifier import train, predict
+# from word2vec_sentifier import train, predict
+# classifier = train()
 
 word2vec_flag = 0
 model_flag = 0
-day = [24,25,26,27,28,29,30,31]
-
+# day = [24, 25, 26, 27, 28, 29, 30, 31]
 
 neg_ratio = []
 
-classifier = train()
 
-for j in day:
-    if sys.argv[1] == "./data/CrisisLex/CrisisLex27K.csv":
-        dimensions = int(sys.argv[2])
-        df = pd.read_csv(sys.argv[1], encoding="ISO-8859-1", delimiter="\t")
-        my_columns = ["id", "keyword", "key", "choose_one", "text"]
-        df.columns = my_columns
-        df['choose_one:confidence'] = df['choose_one'].map(
-            lambda x: 1 if x == "Not related" or x == "Related and informative" else 0.5)
-        df['choose_one'] = df['choose_one'].map(lambda
-                                                    x: "Relevant" if x == "Related and informative" or x == "Related - but not informative" else "Not Relevant")
+INPUT_FOLDER = './data/gesis/2015-08/state/'
+for file in glob.glob(INPUT_FOLDER + '*/*.txt'):
+    print file
+    filename = re.findall('[^\\\\/]+', file)[-1]
+    if False:
+        if sys.argv[1] == "./data/CrisisLex/CrisisLex27K.csv":
+            dimensions = int(sys.argv[2])
+            df = pd.read_csv(sys.argv[1], encoding="ISO-8859-1", delimiter="\t")
+            my_columns = ["id", "keyword", "key", "choose_one", "text"]
+            df.columns = my_columns
+            df['choose_one:confidence'] = df['choose_one'].map(
+                lambda x: 1 if x == "Not related" or x == "Related and informative" else 0.5)
+            df['choose_one'] = df['choose_one'].map(lambda
+                                                        x: "Relevant" if x == "Related and informative" or x == "Related - but not informative" else "Not Relevant")
 
-        if os.path.isfile('./data/word2vec/word_2_vec_token_mappings/crisislex26_stem_map_high.json'):
-            stem_map_high = json.load(open('./data/word2vec/word_2_vec_token_mappings/crisislex26_stem_map_high.json'))
-            stem_map_low = json.load(open('./data/word2vec/word_2_vec_token_mappings/crisislex26_stem_map_low.json'))
-            low_2_high_map = json.load(open('./data/word2vec/word_2_vec_token_mappings/crisislex26_low_2_high_map.json'))
+            if os.path.isfile('./data/word2vec/word_2_vec_token_mappings/crisislex26_stem_map_high.json'):
+                stem_map_high = json.load(open('./data/word2vec/word_2_vec_token_mappings/crisislex26_stem_map_high.json'))
+                stem_map_low = json.load(open('./data/word2vec/word_2_vec_token_mappings/crisislex26_stem_map_low.json'))
+                low_2_high_map = json.load(
+                    open('./data/word2vec/word_2_vec_token_mappings/crisislex26_low_2_high_map.json'))
 
-            word2vec_flag = 1
+                word2vec_flag = 1
 
-        if os.path.isfile('./model/crisis_model.lsi'):
-            dictionary = corpora.Dictionary.load('./model/crisis_model.dict')
-            tfidf = models.TfidfModel.load('./model/crisis_model.tfidf')
-            lsi = models.LsiModel.load('./model/crisis_model.lsi')
+            if os.path.isfile('./model/crisis_model.lsi'):
+                dictionary = corpora.Dictionary.load('./model/crisis_model.dict')
+                tfidf = models.TfidfModel.load('./model/crisis_model.tfidf')
+                lsi = models.LsiModel.load('./model/crisis_model.lsi')
 
-            model_flag = 1
+                model_flag = 1
 
 
-    elif sys.argv[1] == "./data/Ryan/10KLabeledTweets_confidence.csv":
-        df = pd.read_csv(sys.argv[1], encoding="ISO-8859-1")
-        dimensions = int(sys.argv[2])
-        # load in the stored low_2_high_map
-        if os.path.isfile('./data/word2vec/word_2_vec_token_mappings/ryan_stem_map_high.json'):
-            stem_map_high = json.load(open('./data/word2vec/word_2_vec_token_mappings/ryan_stem_map_high.json'))
-            stem_map_low = json.load(open('./data/word2vec/word_2_vec_token_mappings/ryan_stem_map_low.json'))
-            low_2_high_map = json.load(open('./data/word2vec/word_2_vec_token_mappings/ryan_low_2_high_map.json'))
+        elif sys.argv[1] == "./data/Ryan/10KLabeledTweets_confidence.csv":
+            df = pd.read_csv(sys.argv[1], encoding="ISO-8859-1")
+            dimensions = int(sys.argv[2])
+            # load in the stored low_2_high_map
+            if os.path.isfile('./data/word2vec/word_2_vec_token_mappings/ryan_stem_map_high.json'):
+                stem_map_high = json.load(open('./data/word2vec/word_2_vec_token_mappings/ryan_stem_map_high.json'))
+                stem_map_low = json.load(open('./data/word2vec/word_2_vec_token_mappings/ryan_stem_map_low.json'))
+                low_2_high_map = json.load(open('./data/word2vec/word_2_vec_token_mappings/ryan_low_2_high_map.json'))
 
-            word2vec_flag = 1
+                word2vec_flag = 1
 
-        if os.path.isfile('./model/model.lsi'):
-            dictionary = corpora.Dictionary.load('./model/model.dict')
-            tfidf = models.TfidfModel.load('./model/model.tfidf')
-            lsi = models.LsiModel.load('./model/model.lsi')
+            if os.path.isfile('./model/model.lsi'):
+                dictionary = corpora.Dictionary.load('./model/model.dict')
+                tfidf = models.TfidfModel.load('./model/model.tfidf')
+                lsi = models.LsiModel.load('./model/model.lsi')
 
-            model_flag = 1
+                model_flag = 1
 
-    input_file = "./data/state_id_2014-08-24/output/2014-08-"+str(j)+".txt"
-    output_file = "./data/state_id_2014-08-24/output/2014-08-"+str(j)+"_hash_filter.txt"
+    input_file = file
+    dir_path = os.path.dirname(file)
+    output_file = dir_path + '/out_' + filename
 
-    final_output_file = "./data/state_id_2014-08-24/output/2014-08-"+str(j)+"_sent.txt"
+    print file
+    print filename
+    print output_file
 
-    type = int(sys.argv[3])     # type = 1 means filter by classification; otherwise, filter by hashtag
+    final_output_file = dir_path + '/out_sent_' + filename
 
+    type = int(sys.argv[3])  # type = 1 means filter by classification; otherwise, filter by hashtag
 
     if type == 1:
 
@@ -88,6 +99,7 @@ for j in day:
         print "Total unique tweets: %d" % len(df)
 
         df = clean_and_tokenize(df)
+
 
         # Loading the google word2vec dataset into the model
 
@@ -102,12 +114,13 @@ for j in day:
                     split_tweet_return.append(token_stemmed)
             return split_tweet_return
 
+
         df["text_tokenized_stemmed_w2v"] = df["text_tokenized_stemmed"].apply(
             lambda x: map_low_frequency_tokens(x, low_2_high_map))
 
         # amount of tweets where words have been mapped
         print "Fraction of tweets mapped: %f" % (
-        float(len(df[df['text_tokenized_stemmed'] != df['text_tokenized_stemmed_w2v']])) / float(len(df)))
+            float(len(df[df['text_tokenized_stemmed'] != df['text_tokenized_stemmed_w2v']])) / float(len(df)))
 
         df_full = df[["choose_one", "text_tokenized_stemmed", "text_tokenized_stemmed_w2v"]]
         df_filtered = df[["choose_one", "text_tokenized_stemmed", "text_tokenized_stemmed_w2v"]][
@@ -153,7 +166,7 @@ for j in day:
             return roc_data
 
 
-        def make_dictionary_and_corpus( df_corpus):
+        def make_dictionary_and_corpus(df_corpus):
             # the tokenized and stemmed data form our texts database
             '''texts = df_dictionary'''
 
@@ -165,7 +178,7 @@ for j in day:
             texts = [[token for token in text if frequency[token] > 1] for text in texts]'''
 
             # create a gensim dictionary
-            #dictionary = corpora.Dictionary(texts)
+            # dictionary = corpora.Dictionary(texts)
 
             # create a new texts of only the ones I will analyze
             texts = df_corpus
@@ -175,16 +188,15 @@ for j in day:
             # corpus = [token_word2vec_map(text, frequency) for text in texts]
 
             # create a tfidf wrapper and convert the corpus to a tfidf format
-            #tfidf = models.TfidfModel(corpus)
+            # tfidf = models.TfidfModel(corpus)
             corpus_tfidf = tfidf[corpus]
 
             # return a tuple with the dictionary and corpus
-            return ( corpus_tfidf, corpus)
+            return (corpus_tfidf, corpus)
 
 
         tweet_type = "text_tokenized_stemmed"
         corpus_tfidf, corpus_bow = make_dictionary_and_corpus(df_filtered[tweet_type])
-
 
 
         def remove_doc_label(doc):
@@ -196,7 +208,7 @@ for j in day:
 
         def latent_semantic_analysis(df, corpus_tfidf, return_topics=False, n_topics=10, n_words=10):
             # create a lsi wrapper around the tfidf wrapper
-            #lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=dimensions, power_iters=10)
+            # lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=dimensions, power_iters=10)
             corpus_lsi = lsi[corpus_tfidf]
 
             # create the features for a new dataframe
@@ -220,7 +232,7 @@ for j in day:
         df_lsi_features, topics, lsi = latent_semantic_analysis(df_filtered, corpus_tfidf, True, 15, 20)
 
         cross_val_num = 8
-        #roc_data = k_fold_roc(df_lsi_features, dimensions, cross_val_num)
+        # roc_data = k_fold_roc(df_lsi_features, dimensions, cross_val_num)
         X = df_lsi_features[[i for i in range(dimensions)]]
         y = df_lsi_features["choose_one"]
 
@@ -228,15 +240,14 @@ for j in day:
         # print X
         X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, train_size=0.80)
 
-
         # make the model
         # model = linear_model.LogisticRegression(class_weight = "balanced", C = 1)
-        #model = linear_model.LogisticRegression()
+        # model = linear_model.LogisticRegression()
         model = svm.LinearSVC()
         model.fit(X_train, y_train)
 
         with open(input_file, 'rU') as f:
-            rd = rd=csv.reader(f, delimiter=",")
+            rd = rd = csv.reader(f, delimiter=",")
             reader = []  # list of tweets
 
             for a in rd:
@@ -261,15 +272,16 @@ for j in day:
         reader.columns = my_columns
 
         reader = reader.drop_duplicates(subset=["text"],
-                                keep=False).reset_index()
+                                        keep=False).reset_index()
         reader = clean_and_tokenize(reader)
 
         test_tweet_type = "text_tokenized_stemmed"
         test_corpus_tfidf, test_corpus_bow = make_dictionary_and_corpus(reader[test_tweet_type])
 
+
         def test_latent_semantic_analysis(df, corpus_tfidf, return_topics=False, n_topics=10, n_words=10):
             # create a lsi wrapper around the tfidf wrapper
-            #lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=dimensions, power_iters=10)
+            # lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=dimensions, power_iters=10)
             corpus_lsi = lsi[corpus_tfidf]
 
             # create the features for a new dataframe
@@ -280,30 +292,26 @@ for j in day:
             # create a new dataframe with the features
             df_features = pd.DataFrame(data=features)
 
-
-
             # create a merged dataframe from the input (the indicies should match since I reset them earlier on)
             df_merged = pd.concat([df, df_features], axis=1)
-            #[df["choose_one"], df_features]
+            # [df["choose_one"], df_features]
 
             # return the new features dataframe devoid of columns that contain nothing
             if return_topics:
                 return (df_merged.fillna(0), lsi.print_topics(n_topics, num_words=n_words), lsi)
             else:
                 return df_merged.fillna(0)
-        #print reader
-
-        test_df_lsi_features, test_topics, test_lsi = test_latent_semantic_analysis(reader, test_corpus_tfidf, True, 15, 20)
 
 
+        # print reader
+
+        test_df_lsi_features, test_topics, test_lsi = test_latent_semantic_analysis(reader, test_corpus_tfidf, True, 15,
+                                                                                    20)
 
         test_X = test_df_lsi_features[[i for i in range(dimensions)]]
 
-
-        #print test_X
+        # print test_X
         test_y_pred = model.predict(test_X)
-
-
 
         xyz = test_df_lsi_features[["text", "time", "id", "lat", "log"]]
         with open(output_file, "wb") as f2:
@@ -311,14 +319,12 @@ for j in day:
             j = 0
             for index, row in xyz.iterrows():
                 if test_y_pred[j] == "Relevant":
-                    s = str(row['text'])+", "+str(row['time'])+", "+str(row['id'])+", "+str(row['lat'])+", "+str(row['log'])
+                    s = str(row['text']) + ", " + str(row['time']) + ", " + str(row['id']) + ", " + str(
+                        row['lat']) + ", " + str(row['log'])
                     f2.write(s + '\n')
                 j += 1
 
-
         y_pred = model.predict(X_test)
-
-
 
         # various "fitness" metrics
         print "Train accuracy: %f \n" % model.score(X_train, y_train)
@@ -341,12 +347,21 @@ for j in day:
         print cm[1][1] / ((cm[1][0] + cm[1][1]) * 1.0)
         print "\n"
 
-    else:   # filter disaster-related tweets using hashtags
+    else:  # filter disaster-related tweets using hashtags
 
         import re
 
+        # do not include general words, e.g., napa, naturaldisaster
         r = re.compile(
-            r'napaearthquake | earthquake | quake | southnapaquake | napa | napaquake | americancanyon  | earthquakeamericancanyon | bayareaquake | sfearthquake | naturaldisaster | earthquakeamericancanyon',
+            r"""
+            earthquake | aftershock | aftershocks | foreshock | eathquake | eartquake | earthquakes | quake | bigearthquake | bayquake | earrhquake | majorearthquake | postearthquake | earthquakedamage | eathquakedamage | earthquakedamage2014 | 3amearthquake | earthquake2014 | earthquake14 | postearthquakeinspections
+            | caearthquake | californiaearthquake | californiaearthquakes | CAearthquake | CAearthquakes | earthquakeCA | norcalearthquake | sfoearthquake | bayareaearthquake | norcaquake
+            | napaquake | napaquakes | napaearthquake | southnapaquake | napashake | earthquakeinnapa | southnapaearthquake | eartquakenapa | sonomaquake | southnapearthquake | earthquakenapa | napaquake14 | napaquake2014 | westnapafault | earthquakeruinednapaplans | napastrong
+            | prayfornapa | rebuildnapa  | staysafenapa | staystrongnapa | recovernapa | NapaEarthquake6
+            | SanFranciscoearthquake | sfearthquake | bayareaquake | sfquake | earthquakesf | earthquakesanfrancisco | earthquakessf | sfeathquake | earthquakesf2014 | earthquakebayarea | sanfranquake2014
+            | americancanyonquake | americancanyonearthquake | earthquakeamericancanyon | earthquakeamericancanyon | earthquakeinamericancanyon | prayforamericancanyon
+            | myfirstquake | myfirstearthquake | my1stquake | earthquakebelt | earthquakesucks | earthquaketoday | hateearthquakes | pissoffearthquake | fuckyouearthquake | nomoreearthquakes | EarthquakeAt3am | thatwasafuckinghugeearthquake | noearthquakehere | noearthquakes | ItWasAnEarthquake | fearoftheearthquake | terroirquake | earthquakesfiresfloodsetc | caloforniaearthquake | postearthquakepost| earthquakepreparedness | survivedtheearthquake | earthquakereadiness | earthquakekit | earthquakeprobs | earthquakeproblems | haterofearthquakes | earthquakesurviving | firstquakeinnewhouse| earthquakesurvivor | August24EarthquakeSurvivor| sfearthquakewelcome | quakenoob | didntfeelanyearthquake | earthequakemode | isurvivedanearthquake |harvestearthquake | earthquakessuck | ihateearthquakes
+            """,
             flags=re.I | re.X)
         disaster_tweets_count = 0
         with open(input_file) as f:
@@ -373,8 +388,6 @@ for j in day:
                         disaster_tweets_count += 1
         print "Disaster related tweets: ", disaster_tweets_count
 
-
-
     # def SentiStrength(tweet):
     #     #open a subprocess using shlex to get the command line string into the correct args list format
     #     p = subprocess.Popen(shlex.split("java -jar SentiStrength.jar stdin sentidata data/SentStrength_Data/ trinary"),stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -393,18 +406,18 @@ for j in day:
     """
 
     def sensiment_analyzer(tweet_input, tweet_output, delimiter=',', tweet_index=0):
-        moods=[]    # what is it for?
+        moods = []  # what is it for?
         qw = 0
         count_pos = 0
         count_neg = 0
         mood_stats = {}  # counting frequency of tweet
         with open(tweet_input, 'rU') as f:
             with open(tweet_output, "wb") as f2:
-                rd=csv.reader(f, delimiter=delimiter)
-                reader=[]   # list of tweets
+                rd = csv.reader(f, delimiter=delimiter)
+                reader = []  # list of tweets
                 for a in rd:
                     arr = []
-                    #a = [x.strip() for x in line.split(',')]
+                    # a = [x.strip() for x in line.split(',')]
 
                     if len(a) > 5:
                         st = ""
@@ -429,7 +442,7 @@ for j in day:
                         count_pos += 1
 
                     a.append(str(mood))
-                    #print a
+                    # print a
                     f2.write(', '.join(a) + '\n')
                     qw += 1
                     if qw % 20 == 0:
@@ -442,53 +455,55 @@ for j in day:
 
         neg_ratio.append(count_neg / ((count_pos + count_neg) * 1.0))
 
-    sensiment_analyzer(output_file, final_output_file, ',', 0)
+
+    # sensiment_analyzer(output_file, final_output_file, ',', 0)
 
 
-"""
-Daily plot
-"""
-import matplotlib.pyplot as plt
-#plt.plot([0.43, 0.39, 0.42, 0.23, 0.17, 0.13, 0.17, 0.24])
-plt.plot(neg_ratio)
-plt.ylabel('neg_ratio')
-plt.xlabel('day')
-plt.show()
+if False:
+    """
+    Daily plot
+    """
+    import matplotlib.pyplot as plt
 
+    # plt.plot([0.43, 0.39, 0.42, 0.23, 0.17, 0.13, 0.17, 0.24])
+    plt.plot(neg_ratio)
+    plt.ylabel('neg_ratio')
+    plt.xlabel('day')
+    plt.show()
 
+    """
+    Hourly plot
+    """
+    import time
+    import datetime
 
-"""
-Hourly plot
-"""
-import time
-import datetime
+    s = "2014-08-24 06:00:00"
+    s_time = time.mktime(datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S").timetuple())
+    arr = []
+    for k in xrange(1, 8):
+        pos = 0
+        neg = 0
+        total = 0
+        set_time = s_time + k * 10800
+        with open("./data/state_id_2014-08-24/output/2014-08-24_sent.txt") as f2:
+            for i in f2:
+                a = [x.strip() for x in i.split(',')]
+                t = time.mktime(datetime.datetime.strptime(a[1], "%Y-%m-%d %H:%M:%S").timetuple())
+                if set_time > int(t) and int(t) > set_time - 10800:
+                    if int(a[5]) == -1:
+                        neg += 1
+                    elif int(a[5]) == 1:
+                        pos += 1
+                    total += 1
+            if pos == 0:
+                arr.append(0)
+            else:
+                arr.append(neg / ((pos + neg) * 1.0))
 
-s = "2014-08-24 06:00:00"
-s_time = time.mktime(datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S").timetuple())
-arr = []
-for k in xrange(1,8):
-    pos = 0
-    neg = 0
-    total = 0
-    set_time = s_time + k*10800
-    with open("./data/state_id_2014-08-24/output/2014-08-24_sent.txt") as f2:
-        for i in f2:
-            a = [x.strip() for x in i.split(',')]
-            t = time.mktime(datetime.datetime.strptime(a[1], "%Y-%m-%d %H:%M:%S").timetuple())
-            if set_time > int(t) and int(t) > set_time - 10800:
-                if int(a[5]) == -1:
-                    neg += 1
-                elif int(a[5]) == 1:
-                    pos += 1
-                total += 1
-        if pos == 0:
-            arr.append(0)
-        else:
-            arr.append(neg / ((pos + neg) * 1.0))
+            print neg, pos, total
+    import matplotlib.pyplot as plt
 
-        print neg, pos, total
-import matplotlib.pyplot as plt
-plt.plot(arr)
-plt.ylabel('neg_ratio')
-plt.xlabel('hour')
-plt.show()
+    plt.plot(arr)
+    plt.ylabel('neg_ratio')
+    plt.xlabel('hour')
+    plt.show()

@@ -109,7 +109,7 @@ def train():
 """
 predict the sentiment of a set of tweets using a classifier
 """
-PREDICTING = True
+PREDICTING = False
 if PREDICTING:
     predict_arrays = numpy.zeros((9713, 100))
 
