@@ -174,7 +174,7 @@ def read_social_map(file='./data/earthquake_sentiment/output.txt'):
                 # print lat, lon
     return np.array(tweet_data)
 # filter_tweets(min_lat - lat_spacing, min_lon - lon_spacing, max_lat, max_lon)
-# print os.system("python prediction_word2vec.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 ./data/earthquake_sentiment/2014-08-24_06.txt ./data/earthquake_sentiment/logistic_pred_output.txt ./data/earthquake_sentiment/output.txt 0")
+# print os.system("python word2vec_tweet_filter.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 ./data/earthquake_sentiment/2014-08-24_06.txt ./data/earthquake_sentiment/logistic_pred_output.txt ./data/earthquake_sentiment/output.txt 0")
 
 
 

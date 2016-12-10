@@ -16,19 +16,23 @@ from sklearn import svm
 import csv
 import re
 import os
-import shlex
-import subprocess
-# from word2vec_sentifier import train, predict
-# classifier = train()
+
+#from word2vec_sentifier import train, predict
+#classifier = train()
+
+import hashtag_tweet_filter
+import sentiment_analyzer
+import neg_ratio_plot
 
 word2vec_flag = 0
 model_flag = 0
-# day = [24, 25, 26, 27, 28, 29, 30, 31]
+
 
 neg_ratio = []
 
+senti_type = int(sys.argv[4])
 
-INPUT_FOLDER = './data/gesis/2015-08/state/'
+INPUT_FOLDER = './data/gesis/2014-08/state/'
 for file in glob.glob(INPUT_FOLDER + '*/*.txt'):
     print file
     filename = re.findall('[^\\\\/]+', file)[-1]
@@ -90,6 +94,8 @@ for file in glob.glob(INPUT_FOLDER + '*/*.txt'):
     type = int(sys.argv[3])  # type = 1 means filter by classification; otherwise, filter by hashtag
 
     if type == 1:
+        output_file = dir_path + '/out_classification_' + filename
+        final_output_file = dir_path + '/out_classification_sent_' + filename
 
         df = df[["choose_one", "text", "choose_one:confidence"]]
 
@@ -347,163 +353,39 @@ for file in glob.glob(INPUT_FOLDER + '*/*.txt'):
         print cm[1][1] / ((cm[1][0] + cm[1][1]) * 1.0)
         print "\n"
 
+        # calling the sentiment method
+        if senti_type == 0:
+            neg_ratio = sentiment_analyzer.sensiment_analyzer(neg_ratio, output_file, final_output_file, ',', 0)
+        elif senti_type == 1:
+            print ""
+            # word2vec_sentifier method will be called
+
+            #sentiment = predict(classifier, [a[tweet_index]])
+
     else:  # filter disaster-related tweets using hashtags
 
-        import re
+        # separate output file for hashtag filter
 
-        # do not include general words, e.g., napa, naturaldisaster
-        r = re.compile(
-            r"""
-            earthquake | aftershock | aftershocks | foreshock | eathquake | eartquake | earthquakes | quake | bigearthquake | bayquake | earrhquake | majorearthquake | postearthquake | earthquakedamage | eathquakedamage | earthquakedamage2014 | 3amearthquake | earthquake2014 | earthquake14 | postearthquakeinspections
-            | caearthquake | californiaearthquake | californiaearthquakes | CAearthquake | CAearthquakes | earthquakeCA | norcalearthquake | sfoearthquake | bayareaearthquake | norcaquake
-            | napaquake | napaquakes | napaearthquake | southnapaquake | napashake | earthquakeinnapa | southnapaearthquake | eartquakenapa | sonomaquake | southnapearthquake | earthquakenapa | napaquake14 | napaquake2014 | westnapafault | earthquakeruinednapaplans | napastrong
-            | prayfornapa | rebuildnapa  | staysafenapa | staystrongnapa | recovernapa | NapaEarthquake6
-            | SanFranciscoearthquake | sfearthquake | bayareaquake | sfquake | earthquakesf | earthquakesanfrancisco | earthquakessf | sfeathquake | earthquakesf2014 | earthquakebayarea | sanfranquake2014
-            | americancanyonquake | americancanyonearthquake | earthquakeamericancanyon | earthquakeamericancanyon | earthquakeinamericancanyon | prayforamericancanyon
-            | myfirstquake | myfirstearthquake | my1stquake | earthquakebelt | earthquakesucks | earthquaketoday | hateearthquakes | pissoffearthquake | fuckyouearthquake | nomoreearthquakes | EarthquakeAt3am | thatwasafuckinghugeearthquake | noearthquakehere | noearthquakes | ItWasAnEarthquake | fearoftheearthquake | terroirquake | earthquakesfiresfloodsetc | caloforniaearthquake | postearthquakepost| earthquakepreparedness | survivedtheearthquake | earthquakereadiness | earthquakekit | earthquakeprobs | earthquakeproblems | haterofearthquakes | earthquakesurviving | firstquakeinnewhouse| earthquakesurvivor | August24EarthquakeSurvivor| sfearthquakewelcome | quakenoob | didntfeelanyearthquake | earthequakemode | isurvivedanearthquake |harvestearthquake | earthquakessuck | ihateearthquakes
-            """,
-            flags=re.I | re.X)
-        disaster_tweets_count = 0
-        with open(input_file) as f:
-            with open(output_file, "wb") as f2:
-                for line in f:
-                    arr = []
-                    a = [x.strip() for x in line.split(',')]
+        output_file = dir_path + '/out_hash_' + filename
+        final_output_file = dir_path + '/out_hash_sent_' + filename
+        print output_file
 
-                    if len(a) > 5:
-                        st = ""
-                        for i in xrange(0, len(a) - 4):
-                            if i == len(a) - 5:
-                                st += a[i]
-                            else:
-                                st += a[i] + ", "
-                        arr.append(st)
-                        for i in xrange(len(a) - 4, len(a)):
-                            arr.append(a[i])
-                        a = []
-                        a = arr
-                    if re.search(r, a[0]):
-                        # print a[0]
-                        f2.write(', '.join(a) + '\n')
-                        disaster_tweets_count += 1
-        print "Disaster related tweets: ", disaster_tweets_count
+        # calling the hashtag method
 
-    # def SentiStrength(tweet):
-    #     #open a subprocess using shlex to get the command line string into the correct args list format
-    #     p = subprocess.Popen(shlex.split("java -jar SentiStrength.jar stdin sentidata data/SentStrength_Data/ trinary"),stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    #     #communicate via stdin the string to be rated. Note that all spaces are replaced with +
-    #     #stdout_text, stderr_text = p.communicate(tweet.replace(" ", "+").encode())
-    #     stdout_text, stderr_text = p.communicate(tweet.replace(" ", "+"))
-    #     #remove the tab spacing between the positive and negative ratings. e.g. 1    -5 -> 1-5
-    #     stdout_text = stdout_text.rstrip().decode().replace("\t","")
-    #     return stdout_text
+        hashtag_tweet_filter.hash_filter(input_file, output_file)
+
+        #calling the sentiment method
+        if senti_type == 0:
+            neg_ratio = sentiment_analyzer.sensiment_analyzer(neg_ratio, output_file, final_output_file, ',', 0)
+        elif senti_type == 1:
+            print ""
+            # word2vec_sentifier method will be called
+
+            # sentiment = predict(classifier, [a[tweet_index]])
 
 
-    """
-    run senstiment analysis for a file, including a set of tweets
-    each line of input file is a tweet's information
-    tweet_index is the index of the text in each line
-    """
 
-    def sensiment_analyzer(tweet_input, tweet_output, delimiter=',', tweet_index=0):
-        moods = []  # what is it for?
-        qw = 0
-        count_pos = 0
-        count_neg = 0
-        mood_stats = {}  # counting frequency of tweet
-        with open(tweet_input, 'rU') as f:
-            with open(tweet_output, "wb") as f2:
-                rd = csv.reader(f, delimiter=delimiter)
-                reader = []  # list of tweets
-                for a in rd:
-                    arr = []
-                    # a = [x.strip() for x in line.split(',')]
-
-                    if len(a) > 5:
-                        st = ""
-                        for i in xrange(0, len(a) - 4):
-                            if i == len(a) - 5:
-                                st += a[i]
-                            else:
-                                st += a[i] + ", "
-                        arr.append(st)
-                        for i in xrange(len(a) - 4, len(a)):
-                            arr.append(a[i])
-                        a = []
-                        a = arr
-
-                    # res=SentiStrength(a[tweet_index])
-                    sentiment = predict(classifier, [a[tweet_index]])
-                    mood = int(sentiment[0])
-                    moods.append(mood)
-                    if mood == -1:
-                        count_neg += 1
-                    elif mood == 1:
-                        count_pos += 1
-
-                    a.append(str(mood))
-                    # print a
-                    f2.write(', '.join(a) + '\n')
-                    qw += 1
-                    if qw % 20 == 0:
-                        print 'Processed tweets: ' + str(qw)
-
-        print "neg =", count_neg
-        print "pos = ", count_pos
-        print (count_neg / ((count_pos + count_neg) * 1.0))
-        print (count_neg / (qw * 1.0))
-
-        neg_ratio.append(count_neg / ((count_pos + count_neg) * 1.0))
-
-
-    # sensiment_analyzer(output_file, final_output_file, ',', 0)
-
-
+# to plot the sentiment ratio of the tweets
 if False:
-    """
-    Daily plot
-    """
-    import matplotlib.pyplot as plt
 
-    # plt.plot([0.43, 0.39, 0.42, 0.23, 0.17, 0.13, 0.17, 0.24])
-    plt.plot(neg_ratio)
-    plt.ylabel('neg_ratio')
-    plt.xlabel('day')
-    plt.show()
-
-    """
-    Hourly plot
-    """
-    import time
-    import datetime
-
-    s = "2014-08-24 06:00:00"
-    s_time = time.mktime(datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S").timetuple())
-    arr = []
-    for k in xrange(1, 8):
-        pos = 0
-        neg = 0
-        total = 0
-        set_time = s_time + k * 10800
-        with open("./data/state_id_2014-08-24/output/2014-08-24_sent.txt") as f2:
-            for i in f2:
-                a = [x.strip() for x in i.split(',')]
-                t = time.mktime(datetime.datetime.strptime(a[1], "%Y-%m-%d %H:%M:%S").timetuple())
-                if set_time > int(t) and int(t) > set_time - 10800:
-                    if int(a[5]) == -1:
-                        neg += 1
-                    elif int(a[5]) == 1:
-                        pos += 1
-                    total += 1
-            if pos == 0:
-                arr.append(0)
-            else:
-                arr.append(neg / ((pos + neg) * 1.0))
-
-            print neg, pos, total
-    import matplotlib.pyplot as plt
-
-    plt.plot(arr)
-    plt.ylabel('neg_ratio')
-    plt.xlabel('hour')
-    plt.show()
+   neg_ratio_plot.plot_ratio(neg_ratio)

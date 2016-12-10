@@ -71,7 +71,7 @@ plt.show()
 import time
 import datetime
 
-s = "2014-08-24 06:00:00"
+s = "2014-08-24 10:00:00"
 s_time = time.mktime(datetime.datetime.strptime(s, "%Y-%m-%d %H:%M:%S").timetuple())
 arr = []
 for k in xrange(1,8):

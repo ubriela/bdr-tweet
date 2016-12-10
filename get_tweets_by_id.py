@@ -20,7 +20,9 @@ from array import *
 # global logger level is configured in main()
 Logger = None
 
-TWEET_PATH = "./data/state_id_2014-08-24/loc.txt"
+#TWEET_PATH = "./data/state_id_2014-08-24/trial.txt"
+
+TWEET_PATH = "./data/michigian_flood/2014-08-11"
 
 county_array = [6075, 6055, 6041, 6033, 6097, 6113, 6095, 6011, 6013, 6001, 6081]
 
@@ -81,8 +83,7 @@ def get_tweet_list(twapi, idlist, file_out):
                     content = re.sub("\s\s+", " ", tweet.text.encode('UTF-8'))
                     content = content.replace("\n", " ")
                     line = ','.join(map(str, [content, tweet.created_at, tweet.user.id, tweet.geo['coordinates'][0], tweet.geo['coordinates'][1]])) + '\n'
-                    print (line)
-                    #file_out.write(line)
+                    file_out.write(line)
 
         except tweepy.TweepError, e:
             time.sleep(60 * 15)
@@ -104,7 +105,11 @@ def get_tweets_bulk(twapi, idfilepath):
     '''
     # process IDs from the file
 
+
     tweet_ids = list()
+    #filepath = "./data/state_id_2014-08-25/sent1.txt"
+
+    filepath = "./data/michigian_flood/"
     '''
 
     parts = idfilepath.split('\\')
@@ -116,17 +121,20 @@ def get_tweets_bulk(twapi, idfilepath):
 
         file_out = open(filepath, 'w')
         '''
-    file_out = "sdsd"
-    with open(idfilepath, 'rb') as idfile:
-        for line in idfile:
-            tweet_id = get_tweet_id(line)
-            Logger.debug('Fetching tweet for ID %s', tweet_id)
-            # API limits batch size to 100
-            if len(tweet_ids) < 100:
-                tweet_ids.append(tweet_id)
-            else:
-                get_tweet_list(twapi, tweet_ids, file_out)
-                tweet_ids = list()
+    file_out = open(filepath + "out_2014-08-11", 'w')
+    os.chdir(TWEET_PATH)
+    for file in glob.glob("*.txt"):
+        idfilepath = str(file)
+        with open(idfilepath, 'rb') as idfile:
+            for line in idfile:
+                tweet_id = get_tweet_id(line)
+                Logger.debug('Fetching tweet for ID %s', tweet_id)
+                # API limits batch size to 100
+                if len(tweet_ids) < 100:
+                    tweet_ids.append(tweet_id)
+                else:
+                    get_tweet_list(twapi, tweet_ids, file_out)
+                    tweet_ids = list()
     # process rump of file
     if len(tweet_ids) > 0:
         get_tweet_list(twapi, tweet_ids, file_out)

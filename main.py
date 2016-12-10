@@ -30,9 +30,10 @@ DATASET = "ryan"  # CrisisLex
 #print os.system("python word2vec_fast.py ./data/Ryan/10KLabeledTweets_confidence.csv 335")
 
 
-#print os.system("python prediction_word2vec.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 ./data/earthquake_sentiment/2014-08-24_06.txt ./data/earthquake_sentiment/logistic_pred_output.txt ./data/earthquake_sentiment/output.txt 0")
+#print os.system("python word2vec_tweet_filter.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 ./data/earthquake_sentiment/2014-08-24_06.txt ./data/earthquake_sentiment/logistic_pred_output.txt ./data/earthquake_sentiment/output.txt 0")
 
-print os.system("python prediction_word2vec.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 0")
+
+print os.system("python word2vec_tweet_filter.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 0 1") # last parameter is to select between the two sentiment analyzer - Sentistrength - 0 and word2vec_sentifier - 1
 
 print "done"
 
