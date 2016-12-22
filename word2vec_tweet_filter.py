@@ -32,10 +32,14 @@ neg_ratio = []
 
 senti_type = int(sys.argv[4])
 
-INPUT_FOLDER = './data/gesis/2014-08/state/'
+#INPUT_FOLDER = './data/gesis/2014-08/state/'
+
+INPUT_FOLDER = './data/michigian_flood/unaffected_output_tweet/'
+OUTPUT_FOLDER = './data/michigian_flood/unaffected_hash_filtered/'
 for file in glob.glob(INPUT_FOLDER + '*/*.txt'):
-    print file
+    #print file
     filename = re.findall('[^\\\\/]+', file)[-1]
+    #out = re.findall('[^\\\\/]+', file)[-2]
     if False:
         if sys.argv[1] == "./data/CrisisLex/CrisisLex27K.csv":
             dimensions = int(sys.argv[2])
@@ -82,8 +86,9 @@ for file in glob.glob(INPUT_FOLDER + '*/*.txt'):
                 model_flag = 1
 
     input_file = file
-    dir_path = os.path.dirname(file)
-    output_file = dir_path + '/out_' + filename
+    dir_path = os.path.dirname(OUTPUT_FOLDER)
+
+    output_file = dir_path + filename
 
     print file
     print filename
@@ -366,7 +371,7 @@ for file in glob.glob(INPUT_FOLDER + '*/*.txt'):
 
         # separate output file for hashtag filter
 
-        output_file = dir_path + '/out_hash_' + filename
+        output_file = dir_path + '/hash_' + filename
         final_output_file = dir_path + '/out_hash_sent_' + filename
         print output_file
 
@@ -375,10 +380,10 @@ for file in glob.glob(INPUT_FOLDER + '*/*.txt'):
         hashtag_tweet_filter.hash_filter(input_file, output_file)
 
         #calling the sentiment method
-        if senti_type == 0:
-            neg_ratio = sentiment_analyzer.sensiment_analyzer(neg_ratio, output_file, final_output_file, ',', 0)
-        elif senti_type == 1:
-            print ""
+        #if senti_type == 0:
+        #    neg_ratio = sentiment_analyzer.sensiment_analyzer(neg_ratio, output_file, final_output_file, ',', 0)
+        #elif senti_type == 1:
+        #   print ""
             # word2vec_sentifier method will be called
 
             # sentiment = predict(classifier, [a[tweet_index]])

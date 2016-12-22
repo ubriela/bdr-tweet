@@ -66,7 +66,7 @@ plt.ylabel('neg_ratio')
 plt.xlabel('day')
 plt.show()
 
-'''
+
 
 import time
 import datetime
@@ -101,4 +101,14 @@ plt.plot(arr)
 plt.ylabel('neg_ratio')
 plt.xlabel('hour')
 plt.show()
+
+'''
+
+import os
+import glob
+
+os.chdir("./data/michigian_flood/hash_filtered")
+print (os.getcwd())
+file_out = open("C:/Sumeet/IMSC/tweet/tweet_mining/data/michigian_flood//"+idfilepath, 'w')
+for file in glob.glob("*.txt"):
 

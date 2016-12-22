@@ -22,9 +22,16 @@ Logger = None
 
 #TWEET_PATH = "./data/state_id_2014-08-24/trial.txt"
 
-TWEET_PATH = "./data/michigian_flood/2014-08-11"
+# For Michigan Flood Folder
+#TWEET_PATH = "./data/michigian_flood/2014-08-16"
 
-county_array = [6075, 6055, 6041, 6033, 6097, 6113, 6095, 6011, 6013, 6001, 6081]
+# For New York Flood
+#TWEET_PATH = "./data/ny_flood"
+
+# For Washington tweets
+TWEET_PATH = "./data/iowa_stf_2"
+
+#county_array = [6075, 6055, 6041, 6033, 6097, 6113, 6095, 6011, 6013, 6001, 6081]
 
 # Generate your own at https://apps.twitter.com/app
 #CONSUMER_KEY = 'VIlDdi6LKAjGJxUhsxZNc1P1t'
@@ -32,10 +39,29 @@ county_array = [6075, 6055, 6041, 6033, 6097, 6113, 6095, 6011, 6013, 6001, 6081
 #OAUTH_TOKEN = '573560865-y1IBXNelm6YbmMeS4E6vSbbOgng7cSlNIGfLp1sW'
 #OAUTH_TOKEN_SECRET = 'Snw836BTOUDVy56Tg6o3IVtjkZwyUUtfosIhzNEwnHRSx'
 
+
+#CONSUMER_KEY = '7UvZlPPrZXUl4QVVMc6K0aTV6'
+#CONSUMER_SECRET = 'eSrnLcdRhbrs4zHdGKQDZa2lJOC7fildOIKcckktpTaYSp7T06'
+#OAUTH_TOKEN = '1633608188-VsB2v5qqOUb8amj4InBTryK6mwmYNifkfiSNjsx'
+#OAUTH_TOKEN_SECRET = 'WFQzD23giH073sEhSkN4e2WsdWsT2E9QLydak4nkIqa5d'
+
+
+#CONSUMER_KEY = '0xlAczBK98VvBvhqf5kGRQ'
+#CONSUMER_SECRET = 'Mcxk4lhY8WYihITXg2IQxKzkjwRexUkwFhzRtgkikU'
+#OAUTH_TOKEN = '43861519-L2xfj6RsaXw1kt6fr4AA2a711ghSx2NXisETqPar5'
+#OAUTH_TOKEN_SECRET = 'H2EmiQbP6MFOzJrv5N2sXflApnIIIQJJ4difHk0sYoI'
+
 CONSUMER_KEY = 'jQck5XQ2zC1RTM05724QpeWmA'
 CONSUMER_SECRET = 'CZs95zlrnhAemvsFj760tK3ZD2at7YrRZt7kgU91RzeDdDObmq'
 OAUTH_TOKEN = '3028433558-noFZLHJl1KU0lxEm0hjeQKhpFvFldO5sDlTsSv7'
 OAUTH_TOKEN_SECRET = '4O0y26ViLqzYWlYlqLece4Rz4EaTeTFi9SE6Zgqk38xJZ'
+
+
+#CONSUMER_KEY = 'k8uVBodZUOTOJeUH1zIRw'
+#CONSUMER_SECRET = 'Lkgdz9MRWdksjx19eeNwojBdPPWGb3ov06fcwDIw'
+#OAUTH_TOKEN = '465794227-Cn0pPQE5HYGZvWfZdqevNl3rb8OGrhhwPjLxresu'
+#OAUTH_TOKEN_SECRET = 'Wtd2TrGSCiH3cW6MpSJwvEfNVVcQHMFk9uFGiHGaEG4'
+
 
 def get_tweet_id(line):
     '''
@@ -121,24 +147,42 @@ def get_tweets_bulk(twapi, idfilepath):
 
         file_out = open(filepath, 'w')
         '''
-    file_out = open(filepath + "out_2014-08-11", 'w')
+    '''
+    folder_list = []
+    print ([x[1] for x in os.walk(TWEET_PATH)])
+
+    print (folder_list)
+    '''
     os.chdir(TWEET_PATH)
-    for file in glob.glob("*.txt"):
-        idfilepath = str(file)
-        with open(idfilepath, 'rb') as idfile:
-            for line in idfile:
-                tweet_id = get_tweet_id(line)
-                Logger.debug('Fetching tweet for ID %s', tweet_id)
-                # API limits batch size to 100
-                if len(tweet_ids) < 100:
-                    tweet_ids.append(tweet_id)
-                else:
+    for ijk in xrange (9, 10):
+        if ijk < 10:
+            s = "0"+str(ijk)
+        else:
+            s = str(ijk)
+        os.chdir("C:/Sumeet/IMSC/tweet/tweet_mining/data/iowa_stf_2/")
+        os.makedirs("out_2014-07-"+ str(s))
+        os.chdir("C:/Sumeet/IMSC/tweet/tweet_mining/data/iowa_stf_2/2014-07-"+ str(s))
+        print (os.getcwd())
+        for file in glob.glob("*.txt"):
+            idfilepath = str(file)
+            if int(idfilepath[11:13]) == 19:
+                file_out = open("C:/Sumeet/IMSC/tweet/tweet_mining/data/iowa_stf_2/out_2014-07-"+ str(s) + "/" +idfilepath, 'w')
+                with open(idfilepath, 'rb') as idfile:
+                    for line in idfile:
+                        tweet_id = get_tweet_id(line)
+                        Logger.debug('Fetching tweet for ID %s', tweet_id)
+                        # API limits batch size to 100
+                        if len(tweet_ids) < 100:
+                            tweet_ids.append(tweet_id)
+                        else:
+                            get_tweet_list(twapi, tweet_ids, file_out)
+                            tweet_ids = list()
+        # process rump of file
+                if len(tweet_ids) > 0:
                     get_tweet_list(twapi, tweet_ids, file_out)
-                    tweet_ids = list()
-    # process rump of file
-    if len(tweet_ids) > 0:
-        get_tweet_list(twapi, tweet_ids, file_out)
-    file_out.close()
+                file_out.close()
+
+
 
 def usage():
     print('Usage: get_tweets_by_id.py [options] folder/file')
