@@ -3,7 +3,7 @@ import glob
 import re
 
 
-disaster_array = ["michigan_storm","california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm", "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm", "washington_wildfire", "newyork_storm"]
+disaster_array = ["michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm", "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm", "washington_wildfire", "newyork_storm"]
 affected_county_array = [[99, 125, 163],
                          [33, 9],
                          [73, 47, 19, 65, 51, 43, 7, 77],

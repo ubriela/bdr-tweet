@@ -12,7 +12,7 @@ import re
 disaster_array = ["michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm", "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm", "washington_wildfire", "newyork_storm"]
 state_code = [26, 6, 53, 19, 19, 34, 40, 19, 50, 54, 48, 53, 53, 36]
 
-hash_1 = [r"""storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding | detroitflood"""
+hash_1 = [r"""storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding | detroitflood""",
           r"""fire | wildfire | wild fire | californiafire | burning | bonfire""",
           r"""mudslide | slide | wild fire | fire | wildfire | earthfall | avalanche | landslide | mud""",
           r"""storm | windstorm | tempest | high wind | strong wind | tornado | cyclone | twister | typhoon | whirlwind | hurricane | flood | high water | flooding | wind | breeze""",
