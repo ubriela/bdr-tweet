@@ -1,8 +1,12 @@
+"""
+generate affected/unaffected files
 
+"""
 import glob
 import re
 
 
+# disaster ids
 disaster_array = ["california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm", "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm", "washington_wildfire", "newyork_storm"]
 affected_county_array = [[33, 9],
                          [73, 47, 19, 65, 51, 43, 7, 77],
@@ -35,8 +39,8 @@ affected_county_array = [[33, 9],
 for ij in xrange(len(disaster_array)):
     affected_count = 0
     unaffected_count = 0
-    with open("C:/Sumeet/IMSC/tweet/tweet_mining/data/" + disaster_array[ij] + "/" + disaster_array[ij] +"_affected_unfiltered.txt", 'w') as f2:
-        for file in glob.glob("./data/" + disaster_array[ij] + "/out/" + '*/*.txt'):
+    with open("./data/disasters/" + disaster_array[ij] + "/" + disaster_array[ij] +"_affected_unfiltered.txt", 'w') as f2:
+        for file in glob.glob("./data/disasters/" + disaster_array[ij] + "/out/" + '*/*.txt'):
 
             textfile = re.findall('[^\\\\/]+', file)[-1]
             filename = re.findall('[^\\\\/]+', file)[-2]
@@ -50,8 +54,8 @@ for ij in xrange(len(disaster_array)):
 
     print "Total Affected related tweets: ", disaster_array[ij], ": ", affected_count
 
-    with open("C:/Sumeet/IMSC/tweet/tweet_mining/data/" + disaster_array[ij] + "/" + disaster_array[ij] + "_unaffected_unfiltered.txt", 'w') as f2:
-        for file in glob.glob("./data/" + disaster_array[ij] + "/out/" + '*/*.txt'):
+    with open("./data/disasters/" + disaster_array[ij] + "/" + disaster_array[ij] + "_unaffected_unfiltered.txt", 'w') as f2:
+        for file in glob.glob("./data/disasters/" + disaster_array[ij] + "/out/" + '*/*.txt'):
 
             textfile = re.findall('[^\\\\/]+', file)[-1]
             filename = re.findall('[^\\\\/]+', file)[-2]
