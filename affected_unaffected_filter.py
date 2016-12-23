@@ -1,14 +1,11 @@
-"""
-generate affected/unaffected files
 
-"""
 import glob
 import re
 
 
-# disaster ids
-disaster_array = ["california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm", "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm", "washington_wildfire", "newyork_storm"]
-affected_county_array = [[33, 9],
+disaster_array = ["michigan_storm","california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm", "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm", "washington_wildfire", "newyork_storm"]
+affected_county_array = [[99, 125, 163],
+                         [33, 9],
                          [73, 47, 19, 65, 51, 43, 7, 77],
                          [119, 143, 59, 63, 189, 191, 5, 167, 41, 147, 109, 81, 37, 65, 19, 149, 35, 21, 151, 91, 197, 69, 23, 193, 93, 161],
                          [131, 89, 191, 5, 43, 197, 23, 77, 49, 181, 125, 117, 135, 101, 57, 185, 7, 51, 111],

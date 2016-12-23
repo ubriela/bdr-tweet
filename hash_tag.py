@@ -1,6 +1,3 @@
-"""
-create _filtered files based on hash-tags
-"""
 import os
 import csv
 import glob
@@ -12,40 +9,29 @@ import re
 #arr = [11,12,13]
 
 
-disaster_array = ["california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm", "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm", "washington_wildfire", "newyork_storm"]
-state_code = [6, 53, 19, 19, 34, 40, 19, 50, 54, 48, 53, 53, 36]    # used for folder selection
+disaster_array = ["michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm", "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm", "washington_wildfire", "newyork_storm"]
+state_code = [26, 6, 53, 19, 19, 34, 40, 19, 50, 54, 48, 53, 53, 36]
 
-# initial hash-tags
-hash_1 = [r"""fire | wildfire | wild fire | californiafire | burning""",
-          r"""mudslide | slide | wild fire | fire | wildfire | earthfall | avalanche | landslide""",
+hash_1 = [r"""storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding | detroitflood"""
+          r"""fire | wildfire | wild fire | californiafire | burning | bonfire""",
+          r"""mudslide | slide | wild fire | fire | wildfire | earthfall | avalanche | landslide | mud""",
           r"""storm | windstorm | tempest | high wind | strong wind | tornado | cyclone | twister | typhoon | whirlwind | hurricane | flood | high water | flooding | wind | breeze""",
           r"""storm | windstorm | tempest | high wind | strong wind | tornado | cyclone | twister | typhoon | whirlwind | hurricane | flood | high water | flooding""",
           r"""storm | windstorm | tempest | high wind | strong wind""",
           r"""storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding""",
           r"""storm | windstorm | tempest | high wind | strong wind | tornado | cyclone | twister | typhoon | whirlwind | hurricane | flood | high water | flooding | wind | breeze""",
           r"""storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding""",
-          r"""earthfall | avalanche | landslide | mudslide | storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding""",
+          r"""thunderstorm | earthfall | avalanche | mud | landslide | mudslide | storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding""",
           r"""storm | windstorm | tempest | high wind | strong wind | tornado | cyclone | twister | typhoon | whirlwind | hurricane | flood | high water | flooding | wind | breeze""",
           r"""wind | breeze | storm | windstorm""", #wash storm
           r"""fire | burning | wildfire""", #wash wildfire
           r"""storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding | snow | snowstorm | storm | blizzard"""] #new york
 
-hash_1_to_be_included_in_hash_2 = [r"""fire | wildfire | wild fire | californiafire | burning""",
-          r"""mudslide | slide | wild fire | fire | wildfire | earthfall | avalanche | landslide""",
-              r"""storm | windstorm | tempest | high wind | strong wind | tornado | cyclone | twister | typhoon | whirlwind | hurricane | flood | high water | flooding | wind | breeze""",
-          r"""storm | windstorm | tempest | high wind | strong wind | tornado | cyclone | twister | typhoon | whirlwind | hurricane | flood | high water | flooding""",
-          r"""storm | windstorm | tempest | high wind | strong wind""",
-          r"""storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding""",
-          r"""storm | windstorm | tempest | high wind | strong wind | tornado | cyclone | twister | typhoon | whirlwind | hurricane | flood | high water | flooding | wind | breeze""",
-          r"""storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding""",
-          r"""earthfall | avalanche | landslide | mudslide | storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding""",
-          r"""storm | windstorm | tempest | high wind | strong wind | tornado | cyclone | twister | typhoon | whirlwind | hurricane | flood | high water | flooding | wind | breeze""",
-          r"""wind | breeze | storm | windstorm""", #wash storm
-          r"""fire | burning | wildfire""", #wash wildfire
-          r"""storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding | snow | snowstorm | storm | blizzard"""] #new york
 
 #INPUT_FOLDER = "./data/washington_wildfire/hash"
 for ij in xrange(len(disaster_array)):
+    #if ij != 8:
+    #    continue
     l = {}
     r = re.compile(
             hash_1[ij],
@@ -59,6 +45,7 @@ for ij in xrange(len(disaster_array)):
 
         if int(idfilepath[11:13]) == state_code[ij]:
             #print idfilepath
+
             with open("./data/disasters/" + disaster_array[ij] + "/hash" + "/" + idfilepath, 'rU') as f:
                 rd = csv.reader(f, delimiter="\t")
                 #print len(rd)
@@ -77,15 +64,15 @@ for ij in xrange(len(disaster_array)):
         if re.search(r, str(i)):
             hash_2.append(i)
     print len(hash_2)
-    print (hash_2)
+    #print (hash_2)
 
-    # s is external hash-tags (hash-2)
-    s = 'r"""'
+    s = ''
     for i in hash_2:
         s += i + " | "
 
     s = s[:-3]
-    s += '"""'
+    #s += " | dff"
+    s += ''
     print s
 
     #sorted_x = sorted(l.items(), key=operator.itemgetter(1))
@@ -96,7 +83,8 @@ for ij in xrange(len(disaster_array)):
     import re
     import csv
 
-    # do not include general words, e.g., napa, naturaldisaster
+            # do not include general words, e.g., napa, naturaldisaster
+
     def hash_filter(input_file, s):
 
         output_file = input_file[:-14] + "filtered.txt"
@@ -104,6 +92,7 @@ for ij in xrange(len(disaster_array)):
         r = re.compile(
             s,
             flags=re.I | re.X)
+
         disaster_tweets_count = 0
         with open(input_file, 'rU') as f:
             rd = csv.reader(f, delimiter=",")
@@ -124,6 +113,7 @@ for ij in xrange(len(disaster_array)):
                             arr.append(a[i])
                         a = []
                         a = arr
+                        #print a[0]
                     if re.search(r, a[0]):
                         #print disaster_tweets_count
                         disaster_tweets_count += 1
@@ -136,6 +126,7 @@ for ij in xrange(len(disaster_array)):
 
     for i in f:
         hash_filter(i, s)
+
 
     print disaster_array[ij]
 
