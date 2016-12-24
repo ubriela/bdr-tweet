@@ -153,7 +153,7 @@ for ij in xrange(len(disaster_array)):
                     if re.search(r, tweet):
                         # print disaster_tweets_count
                         disaster_tweets_count += 1
-                        f2.write(', '.join(a) + '\n')
+                        f2.write(', '.join(a))
 
                         # print "Disaster related tweets: ", disaster_tweets_count
 

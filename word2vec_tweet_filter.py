@@ -32,14 +32,15 @@ neg_ratio = []
 
 senti_type = int(sys.argv[4])
 
-#INPUT_FOLDER = './data/gesis/2014-08/state/'
+INPUT_FOLDER = './data/gesis/2014-08/state/'
+OUTPUT_FOLDER = './data/gesis/2014-08/state_filter/'
 
-INPUT_FOLDER = './data/michigian_flood/unaffected_output_tweet/'
-OUTPUT_FOLDER = './data/michigian_flood/unaffected_hash_filtered/'
+# INPUT_FOLDER = './data/michigian_flood/unaffected_output_tweet/'
+# OUTPUT_FOLDER = './data/michigian_flood/unaffected_hash_filtered/'
 for file in glob.glob(INPUT_FOLDER + '*/*.txt'):
     #print file
     filename = re.findall('[^\\\\/]+', file)[-1]
-    #out = re.findall('[^\\\\/]+', file)[-2]
+    # out = re.findall('[^\\\\/]+', file)[-2]
     if False:
         if sys.argv[1] == "./data/CrisisLex/CrisisLex27K.csv":
             dimensions = int(sys.argv[2])

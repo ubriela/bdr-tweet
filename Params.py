@@ -27,7 +27,9 @@ class Params(object):
     # part_size = 8
     ANALYST_COUNT = 2**10
 
-    disaster_ids = ['newyork_storm']
+    disaster_ids = disaster_array = ["napa_earthquake", "michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm",
+                  "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm",
+                  "washington_wildfire", "newyork_storm"]
     gesis_disaster_folder = './data/disasters/'
     tweet_folder = './model/word2vec-sentiments-master/tweets/'
     label_folder = './model/word2vec-sentiments-master/labels/'
