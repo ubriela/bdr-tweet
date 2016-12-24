@@ -12,6 +12,7 @@ import time
 import datetime
 import calendar
 from Utils import distance
+csv.field_size_limit(1000000)
 
 from Quad_standard import Quad_standard
 from Params import Params
@@ -55,8 +56,9 @@ social_urgency_map = np.matrix(np.zeros(shape=(LAT_SIZE, LON_SIZE, 1)))
 
 # file = "./data/gesis/state_id_2014-08-24/2014-08-24_06.txt"
 # file_out = "./data/earthquake_sentiment/2014-08-24_06.txt"
-file = "./data/gesis/7days_new.txt"
-file_out = "./data/gesis/7days_others.txt"
+
+file = 'data/NewYork/ny_affected_tweet_hash_filter.txt'
+file_out = 'data/NewYork/ny_affected_tweet_hash_filter_tweets.txt'
 
 """
 filter only tweets in a region, output tweets to another file
@@ -82,39 +84,8 @@ def filter_tweets(min_lat, min_lon, max_lat, max_lon):
                 lat, lon = float(a[len(a) - 3]), float(a[len(a) - 2])
                 print lat, lon
                 if min_lat <= lat <= max_lat and min_lon <= lon <= max_lon:
-                    f2.write(', '.join(a) + '\n')
+                    f2.write(','.join(a) + '\n')
     # filter_data = np.all([min_lat <= data[:,0], data[:,0] <= max_lat, min_lon <= data[:,1],  data[:,1]<= max_lon], axis=0)
-
-def extract_tweets(tweet_input, tweet_output, delimiter=',', tweet_index=0):
-    # data = np.loadtxt('./model/word2vec-sentiments-master/labels.txt')
-    # j = 0
-    with open(tweet_input, 'rU') as f:
-        with open(tweet_output, "wb") as f2:
-            rd = csv.reader(f, delimiter=delimiter)
-            for a in rd:
-                arr = []
-                # a = [x.strip() for x in line.split(',')]
-
-                if len(a) > 6:
-                    st = ""
-                    for i in xrange(0, len(a) - 5):
-                        if i == len(a) - 6:
-                            st += a[i]
-                        else:
-                            st += a[i] + ", "
-                    arr.append(st)
-                    for i in xrange(len(a) - 5, len(a)):
-                        arr.append(a[i])
-                    a = []
-                    a = arr
-
-                # res=SentiStrength(a[tweet_index])
-                # f2.write(a[tweet_index] + "\n")
-                # f2.write(a[0] + ',' + a[1] + ',' + a[2] + ',' + a[3] + ',' + a[4] + ',' + str(int(data[j])) + "\n")
-                # j = j + 1
-                t = calendar.timegm(datetime.datetime.strptime(a[1].strip(), "%Y-%m-%d %H:%M:%S").timetuple())
-                d = distance(float(a[3]), float(a[4]), 38.2414392,-122.3128157)
-                f2.write(str(a[1])+ '\t' + str(t) + '\t' + str(int(a[2]))  + '\t' + str(float(a[3])) + '\t' + str(float(a[4])) + '\t' + str(int(a[5])) + '\t' + str(d) + '\n')
 
 
 # 'http://earthquake.usgs.gov/archive/product/shakemap/nc72282711/nc/1431987323474/download/grid.xml'
@@ -159,7 +130,7 @@ def read_dyfi_map(file='./data/usgs/napa/cdi_zip.txt'):
     return data
 
 # compute social urgency map
-def read_social_map(file='./data/earthquake_sentiment/output.txt'):
+def read_social_map(file='./data/earthquake_sentiment/output.csv'):
     tweet_data = []
     with open(file) as f:
         for line in f:
@@ -177,14 +148,21 @@ def read_social_map(file='./data/earthquake_sentiment/output.txt'):
 # print os.system("python word2vec_tweet_filter.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 ./data/earthquake_sentiment/2014-08-24_06.txt ./data/earthquake_sentiment/logistic_pred_output.txt ./data/earthquake_sentiment/output.txt 0")
 
 
-
+RUN_URGENCY_MAP = False
+if RUN_URGENCY_MAP:
 # read_shakemap_xml()
-dyfi_data = read_dyfi_map()
-tweet_data = read_social_map()
+    dyfi_data = read_dyfi_map()
+    tweet_data = read_social_map()
 
-urgency_map = urgency_map.A1
-social_urgency_map_neg = social_urgency_map_neg.A1
-social_urgency_map = social_urgency_map.A1
+    urgency_map = urgency_map.A1
+    social_urgency_map_neg = social_urgency_map_neg.A1
+    social_urgency_map = social_urgency_map.A1
+
+    for i in range(len(urgency_map)):
+        if (urgency_map[i] != 0 or  social_urgency_map[i] != 0) and social_urgency_map_neg[i] >= 10:
+            index_y = i / LON_SIZE
+            index_x = i - (i / LON_SIZE) * LON_SIZE
+            print urgency_map[i], '\t', social_urgency_map[i], '\t', social_urgency_map_neg[i], '\t', social_urgency_map_neg[i]/social_urgency_map[i], '\t', index_y * lat_spacing + min_lat, '\t', index_x * lon_spacing + min_lon
 
 # normalize maps
 # urgency_map = urgency_map / np.linalg.norm(urgency_map)
@@ -205,7 +183,6 @@ def data_readin(p):
     return tweet_locs
 
 # content of tweets
-extract_tweets(file, file_out)
 # locations of tweets
 # param = Params(1000, 37.382166, -123.561700, 39.048834, -121.061700)
 # tweet_locs = data_readin(param)

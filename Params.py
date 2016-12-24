@@ -27,6 +27,11 @@ class Params(object):
     # part_size = 8
     ANALYST_COUNT = 2**10
 
+    disaster_ids = ['newyork_storm']
+    gesis_disaster_folder = './data/gesis_disaster/'
+    tweet_folder = './model/word2vec-sentiments-master/tweets/'
+    label_folder = './model/word2vec-sentiments-master/labels/'
+
     #
     # GRID_SIZE = 1700
     # TIME_SNAPSHOT = 6
