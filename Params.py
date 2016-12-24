@@ -28,7 +28,7 @@ class Params(object):
     ANALYST_COUNT = 2**10
 
     disaster_ids = ['newyork_storm']
-    gesis_disaster_folder = './data/gesis_disaster/'
+    gesis_disaster_folder = './data/disasters/'
     tweet_folder = './model/word2vec-sentiments-master/tweets/'
     label_folder = './model/word2vec-sentiments-master/labels/'
 

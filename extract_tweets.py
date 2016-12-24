@@ -1,4 +1,5 @@
 import numpy as np
+import re
 import os.path
 import csv
 import glob
@@ -13,6 +14,7 @@ csv.field_size_limit(1000000)
 multiple purpose function, e.g., extract tweet only, add sentiment, extract statistics without tweet
 """
 def extract_tweets(tweet_input, tweet_output, delimiter=",", tweet_index=0, type='tweet_only'):
+    print 'extracting...', tweet_input
     if type == 'tweet_only':
         columns = 5
     elif type == 'with_sentiment':
@@ -40,10 +42,12 @@ def extract_tweets(tweet_input, tweet_output, delimiter=",", tweet_index=0, type
                         arr.append(a[i])
                     a = arr
                 elif len(a) < columns:
-                    print len(a)
+                    print len(a), a
 
                 if type == 'tweet_only':
-                    f2.write(a[tweet_index] + "\n")
+                    s = re.sub('[\s]+|&amp;', ' ', a[tweet_index])  # Remove additional white spaces
+                    s = re.sub(r'https?:\/\/.*\/[a-zA-Z0-9]*', '', s)  # Remove hyperlinks
+                    f2.write(s + "\n")
                 elif type == 'with_sentiment':
                     line = str(a[0]) + ',' + str(a[1]) + ',' + str(int(a[2])) + ',' + str(float(a[3])) + ',' + str(float(a[4])) + ',' + str(int(labels[j])) + '\n'
                     f2.write(line)
@@ -54,22 +58,24 @@ def extract_tweets(tweet_input, tweet_output, delimiter=",", tweet_index=0, type
                     f2.write(str(a[1])+ '\t' + str(t) + '\t' + str(int(a[2]))  + '\t' + str(float(a[3])) + '\t' + str(float(a[4])) + '\t' + str(int(a[5])) + '\t' + str(d) + '\n')
 
 # extract tweet_only
-tweet_only, with_sentiment, without_tweet = False, True, True
+tweet_only, with_sentiment, without_tweet = True, False, False
 
 if tweet_only:
-    for file in glob.glob(Params.gesis_disaster_folder + "*.txt"):
+    for file in glob.glob(Params.gesis_disaster_folder + "*/*.txt"):
         basepath, filename = os.path.split(file)
         file_out = Params.tweet_folder + filename
         extract_tweets(file, file_out, type='tweet_only')
 
 # add sentiment to data
-for file in glob.glob(Params.gesis_disaster_folder + "*.txt"):
-    basepath, filename = os.path.split(file)
-    file_out = Params.gesis_disaster_folder + 'with_sentiment/' + filename
-    extract_tweets(file, file_out, type='with_sentiment')
+if with_sentiment:
+    for file in glob.glob(Params.gesis_disaster_folder + "*.txt"):
+        basepath, filename = os.path.split(file)
+        file_out = Params.gesis_disaster_folder + 'with_sentiment/' + filename
+        extract_tweets(file, file_out, type='with_sentiment')
 
 # extract statistics without tweet
-for file in glob.glob(Params.gesis_disaster_folder + 'with_sentiment/' + "*.txt"):
-    basepath, filename = os.path.split(file)
-    file_out = Params.gesis_disaster_folder + 'without_tweet/' + filename
-    extract_tweets(file, file_out, type='without_tweet')
+if without_tweet:
+    for file in glob.glob(Params.gesis_disaster_folder + 'with_sentiment/' + "*.txt"):
+        basepath, filename = os.path.split(file)
+        file_out = Params.gesis_disaster_folder + 'without_tweet/' + filename
+        extract_tweets(file, file_out, type='without_tweet')

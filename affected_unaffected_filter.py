@@ -30,8 +30,6 @@ affected_county_array = [[99, 125, 163],
 #os.chdir("2014-11-28")
 
 
-
-
 for ij in xrange(len(disaster_array)):
     affected_count = 0
     unaffected_count = 0
@@ -44,8 +42,20 @@ for ij in xrange(len(disaster_array)):
 
             if int(textfile[13:16]) in affected_county_array[ij]:
                 with open(file, 'rU') as f:
+                    concat_line = ""
                     for i in f:
-                        f2.write( i )
+                        if len(i.split(',')) >= 5:  # enough data --> write
+                            if concat_line != "":
+                                f2.write(concat_line + ' ' + i)
+                                concat_line = ""
+                            else:
+                                f2.write( i )
+                        else:       # if not (tweets in multiple lines --> combine with the next lines
+                            if concat_line == "":
+                                concat_line = i.rstrip("\n")
+                            else:
+                                concat_line = concat_line + ' ' + i.rstrip("\n")
+
                         affected_count += 1
 
     print "Total Affected related tweets: ", disaster_array[ij], ": ", affected_count
@@ -59,10 +69,22 @@ for ij in xrange(len(disaster_array)):
 
             if int(textfile[13:16]) not in affected_county_array[ij]:
                 with open(file, 'rU') as f:
+                    concat_line = ""
                     for i in f:
-                        f2.write( i )
+                        if len(i.split(',')) >= 5:  # enough data --> write
+                            if concat_line != "":
+                                f2.write(concat_line + ' ' + i)
+                                concat_line = ""
+                            else:
+                                f2.write( i )
+                        else:       # if not (tweets in multiple lines --> combine with the next lines
+                            if concat_line == "":
+                                concat_line = i.rstrip("\n")
+                            else:
+                                concat_line = concat_line + ' ' + i.rstrip("\n")
+
                         unaffected_count += 1
 
-    print "Total UnAffected related tweets: ", disaster_array[ij], ": ",unaffected_count
+    print "\nTotal UnAffected related tweets: ", disaster_array[ij], ": ",unaffected_count
 
     print "Total tweets: ", disaster_array[ij], ": ",unaffected_count + affected_count
