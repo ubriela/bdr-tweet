@@ -111,7 +111,7 @@ def train():
 predict sentiment for a list of disasters, identified by disasters_ids
 output a set of coresponding files of labels
 """
-PREDICTING = True
+PREDICTING = False
 # N = 16342   # Napa
 # N = 2067    # michigan flood (affected)
 # N = 121093    # michigan flood (unaffected)
@@ -141,7 +141,7 @@ if PREDICTING:
                     labels = classifier.predict(predict_arrays)
                     numpy.savetxt(Params.label_folder + value + '.txt', labels, delimiter='\t')
 
-TESTING = False
+TESTING = True
 if TESTING:
     test_arrays = numpy.zeros((182+177, 100))
     test_labels = numpy.zeros(182+177)

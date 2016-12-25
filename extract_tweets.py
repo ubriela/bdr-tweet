@@ -29,21 +29,20 @@ def extract_tweets(tweet_input, tweet_output, delimiter=",", tweet_index=0, type
         columns = 6
     with open(tweet_input, 'rU') as f:
         with open(tweet_output, "w") as f2:
-            for b in f:
-                arr = []
+            for a in f:
+                b = []
 
-                if len(b.split(',')) >= columns:
+                if len(a.split(',')) >= columns:
                     st = ""
-                    b = b.split(',')
-                    for i in xrange(0, len(b) - columns + 1):
-                        if i == len(b) - columns:
-                            st += b[i]
+                    a = a.split(',')
+                    for i in xrange(0, len(a) - columns + 1):
+                        if i == len(a) - columns:
+                            st += a[i]
                         else:
-                            st += b[i] + ","
-                    arr.append(st)
-                    for i in xrange(len(b) - columns + 1, len(b)):
-                        arr.append(b[i])
-                    b = arr
+                            st += a[i] + ","
+                    b.append(st)
+                    for i in xrange(len(a) - columns + 1, len(a)):
+                        b.append(a[i])
                 elif len(b) < columns:
                     print len(b), b
 
@@ -52,16 +51,17 @@ def extract_tweets(tweet_input, tweet_output, delimiter=",", tweet_index=0, type
                     s = re.sub(r'https?:\/\/.*\/[a-zA-Z0-9]*', '', s)  # Remove hyperlinks
                     f2.write(s + "\n")
                 elif type == 'with_sentiment':
-                    line = str(b[0]) + ',' + str(b[1]) + ',' + str(int(b[2])) + ',' + str(float(b[3])) + ',' + str(float(b[4].strip('\n'))) + ',' + str(int(labels[j])) + '\n'
+                    line = str(b[0]) + ',' + str(b[1]) + ',' + str(int(b[2])) + ',' + str(float(b[3])) + ',' + str(float(b[4].rstrip('\n'))) + ',' + str(int(labels[j])) + '\n'
+                    #print line
                     f2.write(line)
                     j = j + 1
                 elif type == 'without_tweet':
                     t = calendar.timegm(datetime.datetime.strptime(b[1].strip(), "%Y-%m-%d %H:%M:%S").timetuple())
                     d = distance(float(b[3]), float(b[4]), 38.2414392,-122.3128157)
-                    f2.write(str(b[1])+ '\t' + str(t) + '\t' + str(int(b[2]))  + '\t' + str(float(b[3])) + '\t' + str(float(b[4])) + '\t' + str(int(b[5])) + '\t' + str(d) + '\n')
+                    f2.write(str(b[1])+ '\t' + str(t) + '\t' + str(int(b[2]))  + '\t' + str(float(b[3])) + '\t' + str(float(b[4].rstrip('\n'))) + '\t' + str(int(b[5])) + '\t' + str(d) + '\n')
 
 # extract tweet_only
-tweet_only, with_sentiment, without_tweet = False, True, False
+tweet_only, with_sentiment, without_tweet = False, False, True
 
 if tweet_only:
     for file in glob.glob(Params.gesis_disaster_folder + "*/*.txt"):
