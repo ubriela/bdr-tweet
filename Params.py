@@ -31,6 +31,9 @@ class Params(object):
                   "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm",
                   "washington_wildfire", "newyork_storm"]
     gesis_disaster_folder = './data/disasters/'
+    with_sentiment_folder = './data/disasters/with_sentiment/'
+    without_tweet_folder = './data/disasters/without_tweet/'
+
     tweet_folder = './model/word2vec-sentiments-master/tweets/'
     label_folder = './model/word2vec-sentiments-master/labels/'
 

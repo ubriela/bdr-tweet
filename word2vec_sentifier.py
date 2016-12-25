@@ -2,6 +2,7 @@
 from gensim import utils
 from gensim.models.doc2vec import TaggedDocument
 from gensim.models import Doc2Vec
+import os.path
 from tweet_tokenizer import tokenize
 from Params import Params
 
@@ -122,21 +123,23 @@ if PREDICTING:
     """
     for disaster_id in Params.disaster_ids:
         for affect in ['_affected', '_unaffected']:
-            for filter in ['_filtered', '_unfiltered']:
+            for filter in ['_filtered']:
                 value = disaster_id + affect + filter
-                file = './tweets/' + value + '.txt'
-                tweet_count = sum(1 for line in open(file)) # count the number of tweets in file
-                predict_arrays = numpy.zeros((tweet_count, 100))
+                file = Params.tweet_folder + value + '.txt'
+                if os.path.isfile(file):
+                    tweet_count = sum(1 for line in open(file)) # count the number of tweets in file
+                    print file, tweet_count
+                    predict_arrays = numpy.zeros((tweet_count, 100))
 
-                for i in range(tweet_count):
-                    prefix_predict = value + '_' + str(i)
-                    predict_arrays[i] = model.docvecs[prefix_predict]
+                    for i in range(tweet_count):
+                        prefix_predict = value + '_' + str(i)
+                        predict_arrays[i] = model.docvecs[prefix_predict]
 
-                # predicting
-                LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
-                          intercept_scaling=1, penalty='l2', random_state=None, tol=0.0001)
-                labels = classifier.predict(predict_arrays)
-                numpy.savetxt(Params.label_folder + value + '.txt', labels, delimiter='\t')
+                    # predicting
+                    LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                              intercept_scaling=1, penalty='l2', random_state=None, tol=0.0001)
+                    labels = classifier.predict(predict_arrays)
+                    numpy.savetxt(Params.label_folder + value + '.txt', labels, delimiter='\t')
 
 TESTING = False
 if TESTING:
