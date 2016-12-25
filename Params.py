@@ -27,15 +27,29 @@ class Params(object):
     # part_size = 8
     ANALYST_COUNT = 2**10
 
-    disaster_ids = disaster_array = ["napa_earthquake", "michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm",
-                  "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm",
-                  "washington_wildfire", "newyork_storm"]
+    disaster_ids = ["napa_earthquake", "michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm", "iowa_stf_2", "texas_storm", "washington_storm", "newyork_storm"]
+
+    disaster_duration = {
+        "napa_earthquake" : ('08-24-2014 00:00:00', '08-31-2014 00:00:00'),
+        "michigan_storm" : ('08-11-2014 00:00:00', '08-16-2014 00:00:00'),
+        "california_fire" : ('09-08-2015 00:00:00', '09-21-2015 00:00:00'),
+        "washington_mudslide" : ('08-08-2015 00:00:00', '08-23-2015 00:00:00'),
+        "iowa_stf" : ('06-13-2014 00:00:00', '06-25-2014 00:00:00'),
+        "iowa_storm" : ('06-19-2015 00:00:00', '06-26-2015 00:00:00'),
+        "jersey_storm" : ('06-22-2015 00:00:00', '07-06-2015 00:00:00'),
+        "iowa_stf_2" : ('06-25-2014 00:00:00', '07-09-2014 00:00:00'),
+        "texas_storm" : ('10-21-2015 00:00:00', '10-31-2015 00:00:00'),
+        "washington_storm" : ('08-28-2015 00:00:00', '09-12-2015 00:00:00'),
+        "newyork_storm" : ('11-16-2014 00:00:00', '11-28-2014 00:00:00')
+    }
+
     gesis_disaster_folder = './data/disasters/'
     with_sentiment_folder = './data/disasters/with_sentiment/'
     without_tweet_folder = './data/disasters/without_tweet/'
 
     tweet_folder = './model/word2vec-sentiments-master/tweets/'
     label_folder = './model/word2vec-sentiments-master/labels/'
+
 
     #
     # GRID_SIZE = 1700
