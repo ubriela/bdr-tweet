@@ -141,7 +141,56 @@ if PREDICTING:
                     labels = classifier.predict(predict_arrays)
                     numpy.savetxt(Params.label_folder + value + '.txt', labels, delimiter='\t')
 
-TESTING = True
+if True:
+    # training
+    classifier = train()
+    """
+    for all disasters, and all kinds of data, e.g., (un)affected, (un)filtered
+    """
+    for disaster_id in Params.disaster_ids:
+        for affect in ['_affected', '_unaffected']:
+            for filter in ['_filtered', '_unfiltered']:
+                value = disaster_id + affect + filter
+                file = Params.tweet_folder + value + '.txt'
+                if os.path.isfile(file):
+                    tweet_count = sum(1 for line in open(file)) # count the number of tweets in file
+                    print file, tweet_count
+                    predict_arrays = numpy.zeros((tweet_count, 100))
+
+                    for i in range(tweet_count):
+                        prefix_predict = value + '_' + str(i)
+                        predict_arrays[i] = model.docvecs[prefix_predict]
+
+                    # predicting
+                    LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                              intercept_scaling=1, penalty='l2', random_state=None, tol=0.0001)
+                    labels = classifier.predict(predict_arrays)
+                    pos = sum([1 for i in labels if i == 1])
+                    neg = sum([1 for i in labels if i == -1])
+                    print value, pos, neg
+                    numpy.savetxt('./model/word2vec-sentiments-master/labels/labels/' + value + '.txt', labels, delimiter='\t')
+
+# classifier = train()
+# file = './model/word2vec-sentiments-master/predict.txt'
+# tweet_count = sum(1 for line in open(file)) # count the number of tweets in file
+# print file, tweet_count
+# predict_arrays = numpy.zeros((tweet_count, 100))
+#
+# for i in range(tweet_count):
+#     prefix_predict = 'PREDICT_' + str(i)
+#     predict_arrays[i] = model.docvecs[prefix_predict]
+#
+# # predicting
+# LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+#           intercept_scaling=1, penalty='l2', random_state=None, tol=0.0001)
+# labels = classifier.predict(predict_arrays)
+# pos = sum([1 for i in labels if i == 1])
+# neg = sum([1 for i in labels if i == -1])
+# print pos, neg
+# numpy.savetxt('./model/word2vec-sentiments-master/predict_labels.txt', labels, delimiter='\t')
+
+
+TESTING = False
 if TESTING:
     test_arrays = numpy.zeros((182+177, 100))
     test_labels = numpy.zeros(182+177)

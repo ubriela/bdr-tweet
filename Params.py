@@ -45,6 +45,7 @@ class Params(object):
 
     gesis_disaster_folder = './data/disasters/'
     with_sentiment_folder = './data/disasters/with_sentiment/'
+    with_informative_folder = './data/disasters/with_informative/'
     without_tweet_folder = './data/disasters/without_tweet/'
 
     tweet_folder = './model/word2vec-sentiments-master/tweets/'
