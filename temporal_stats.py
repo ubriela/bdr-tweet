@@ -7,6 +7,7 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 
 from Params import Params
+import numpy as np
 
 d_duration = Params.disaster_duration
 
@@ -22,15 +23,20 @@ for unit_bin in ['day', 'hour']:
             start_date, end_date = start_date - 3600*8, end_date - 3600*8
 
             for affect in ['_affected', '_unaffected']:
-                for filter in ['_filtered', '_unfiltered']:
-                    filename = disaster_id + affect + filter
+                for filt in ['_filtered', '_unfiltered']:
+                    filename = disaster_id + affect + filt
                     file = Params.without_tweet_folder + filename + '.txt'
                     print file
                     if os.path.isfile(file):
                         data = np.loadtxt(file, dtype=int, delimiter='\t', usecols=(1,5))   # (time, sentiment)
-                        neg_rows = [i for i in range(len(data)) if data[i][1] == -1]
-                        pos_rows = [i for i in range(len(data)) if data[i][1] == 1]
-                        neg_data, pos_data, all_data = data[neg_rows][:,0], data[pos_rows][:,0], data[:,0]
+                        # neg_rows = [i for i in range(len(data)) if data[i][1] == -1]
+                        # pos_rows = [i for i in range(len(data)) if data[i][1] == 1]
+                        # neg_data, pos_data, all_data = data[neg_rows][:,0], data[pos_rows][:,0], data[:,0]
+
+                        all_data = data[:,0]
+                        neg_data = np.array(filter(lambda x : x[1] == -1, data))[:,0]
+                        pos_data = np.array(filter(lambda x : x[1] == 1, data))[:,0]
+
 
                         if unit_bin == 'hour':
                             bins = (end_date - start_date)/(3600)

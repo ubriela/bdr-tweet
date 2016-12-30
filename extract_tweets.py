@@ -34,16 +34,10 @@ def extract_tweets(tweet_input, tweet_output, tweet_index=0, type='tweet_only'):
             for a in f:
                 b = []
                 if len(a.split(',')) >= columns:
-                    tweet = ""
                     a = a.split(',')
-                    for i in xrange(0, len(a) - columns + 1):
-                        if i == len(a) - columns:
-                            tweet += a[i]
-                        else:
-                            tweet += a[i] + ","
+                    tweet = ','.join([a[i] for i in xrange(0, len(a) - columns + 1)])
                     b.append(tweet)
-                    for i in xrange(len(a) - columns + 1, len(a)):
-                        b.append(a[i])
+                    b += [a[i] for i in xrange(len(a) - columns + 1, len(a))]
                 elif len(b) < columns:
                     print len(b), b
                     j = j + 1
