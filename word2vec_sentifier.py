@@ -176,7 +176,7 @@ if False:
 # numpy.savetxt('./model/word2vec-sentiments-master/predict_labels.txt', labels, delimiter='\t')
 
 
-TESTING = True
+TESTING = False
 if TESTING:
     test_arrays = numpy.zeros((182+177, 100))
     test_labels = numpy.zeros(182+177)
