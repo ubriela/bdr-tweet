@@ -155,7 +155,7 @@ for ij in xrange(len(disaster_array)):
                         disaster_tweets_count += 1
                         f2.write(', '.join(a))
                         # print
-"Disaster related tweets: ", disaster_tweets_count
+#"Disaster related tweets: ", disaster_tweets_count
 
 
     f = ["./data/disasters/" + disaster_array[ij] + "/" + disaster_array[ij] + "_affected_unfiltered.txt",

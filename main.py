@@ -7,6 +7,17 @@ from create_vocab_from_tweets import read_data, save_vocab_tweets, make_vocab
 from svm_preprocess import get_vocab, read_train_data, read_test_data, save_data
 from prepare_data import split_data_ryan, split_data_cl
 
+
+#print os.system("python affected_unaffected_filter.py")
+
+#second last parameter decides the classification filter = 0 or hash tag filter = 1
+# last parameter is to select between the two sentiment analyzer - Sentistrength = 0 and word2vec_sentifier = 1
+
+print os.system("python word2vec_tweet_filter.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 0 0 filtered")
+print "done"
+
+#print os.system("python hash_tag.py")
+
 # using proper library depends on OS type
 platform = platform.system()
 if platform == 'Windows':
@@ -33,9 +44,6 @@ DATASET = "ryan"  # CrisisLex
 #print os.system("python word2vec_tweet_filter.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 ./data/earthquake_sentiment/2014-08-24_06.txt ./data/earthquake_sentiment/logistic_pred_output.txt ./data/earthquake_sentiment/output.txt 0")
 
 
-print os.system("python word2vec_tweet_filter.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 0 0") # last parameter is to select between the two sentiment analyzer - Sentistrength - 0 and word2vec_sentifier - 1
-
-print "done"
 
 TRAIN, TEST= "./data/training_tweets.txt", "./data/testing_tweets.txt"
 if DATASET == 'cl':
