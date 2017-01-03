@@ -27,7 +27,10 @@ class Params(object):
     # part_size = 8
     ANALYST_COUNT = 2**10
 
-    disaster_ids = ["napa_earthquake", "michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm", "iowa_stf_2", "texas_storm", "washington_storm", "newyork_storm"]
+    big_disaster_ids = ["napa_earthquake", "michigan_storm", "iowa_stf",
+                    "iowa_stf_2", "texas_storm", "newyork_storm"]
+    disaster_ids = ["napa_earthquake", "michigan_storm", "california_fire", "washington_mudslide", "iowa_stf",
+                    "iowa_storm", "jersey_storm", "iowa_stf_2", "texas_storm", "washington_storm", "newyork_storm"]
 
     disaster_duration = {
         "napa_earthquake" : ('08-23-2014 00:00:00', '08-31-2014 23:59:59'),
@@ -42,6 +45,22 @@ class Params(object):
         "washington_storm" : ('08-28-2015 00:00:00', '08-30-2015 23:59:59'),
         "newyork_storm" : ('11-16-2014 00:00:00', '11-28-2014 23:59:59')
     }
+
+    peak_day = {
+        "napa_earthquake" : 0,
+        "michigan_storm" : 2,
+        "california_fire" : 2,
+        "washington_mudslide" : 13,
+        "iowa_stf" : 2,
+        "iowa_storm" : 5,
+        "jersey_storm" : 0,
+        "iowa_stf_2" : 5,
+        "texas_storm" : 8,
+        "washington_storm" : 0,
+        "newyork_storm" : 2
+    }
+
+
 
     gesis_disaster_folder = './data/disasters/'
     with_sentiment_folder = './data/disasters/with_sentiment/'
