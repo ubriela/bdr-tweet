@@ -36,7 +36,7 @@ classification_type = int(sys.argv[3])
 #INPUT_FOLDER = './data/gesis/2014-08/state/'
 #OUTPUT_FOLDER = './data/gesis/2014-08/state_filter/'
 
-disaster_array = ["michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm",
+disaster_array = ["napa_earthquake", "michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm",
                   "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm",
                   "washington_wildfire", "newyork_storm"]
 
@@ -47,6 +47,8 @@ file_type = str(sys.argv[5])
 #INPUT_FOLDER = "./data/disasters/california_fire/california_fire_affected_filtered.txt"
 for ij in disaster_array:
     print ij
+    if ij == "napa_earthquake":
+        continue
     arr = ["affected", "unaffected"]
     for ji in arr:
         for file in glob.glob("./data/disasters/" + ij + "/" + ij + "_" + ji + "_" + file_type +'.txt'):
@@ -104,7 +106,8 @@ for ij in disaster_array:
 
             if classification_type == 0:
 
-                output_file = file[:-4] + '_classification.txt'
+                output_file = file[:-24] + '_classification_related.txt'
+                output_file_unrelated = file[:-24] + '_classification_unrelated.txt'
                 #final_output_file = dir_path + '/out_classification_sent_' + filename
                 print output_file
 
@@ -264,12 +267,12 @@ for ij in disaster_array:
                 model.fit(X_train, y_train)
 
                 with open(file, 'rU') as f:
-                    rd = rd = csv.reader(f, delimiter=",")
+                    #rd = rd = csv.reader(f, delimiter=",")
                     reader = []  # list of tweets
 
-                    for a in rd:
+                    for line in f:
                         arr = []
-                        # a = [x.strip() for x in line.split(',')]
+                        a = [x.strip() for x in line.split(',')]
 
                         if len(a) > 5:
                             st = ""
@@ -284,14 +287,15 @@ for ij in disaster_array:
                             a = []
                             a = arr
                         reader.append(a)
+
                 reader = pd.DataFrame(reader)
                 my_columns = ["text", "time", "id", "lat", "log"]
                 reader.columns = my_columns
 
-                reader = reader.drop_duplicates(subset=["text"],
-                                                keep=False).reset_index()
+                #reader = reader.drop_duplicates(subset=["text"],keep=False).reset_index()
                 reader = clean_and_tokenize(reader)
 
+                print "sda", len(reader)
                 test_tweet_type = "text_tokenized_stemmed"
                 test_corpus_tfidf, test_corpus_bow = make_dictionary_and_corpus(reader[test_tweet_type])
 
@@ -342,6 +346,18 @@ for ij in disaster_array:
                         j += 1
 
                 y_pred = model.predict(X_test)
+
+                print len(test_y_pred)
+
+                with open(output_file_unrelated, "wb") as f2:
+                    s = []
+                    j = 0
+                    for index, row in xyz.iterrows():
+                        if test_y_pred[j] == "Not Relevant":
+                            s = str(row['text']) + ", " + str(row['time']) + ", " + str(row['id']) + ", " + str(
+                                row['lat']) + ", " + str(row['log'])
+                            f2.write(s + '\n')
+                        j += 1
 
                 # various "fitness" metrics
                 print "Train accuracy: %f \n" % model.score(X_train, y_train)

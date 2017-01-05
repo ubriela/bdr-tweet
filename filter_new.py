@@ -182,7 +182,6 @@ def clean_and_tokenize(df):
     tknzr = TweetTokenizer(strip_handles=False, reduce_len=True)
     df["text_tokenized"] = df["text"].apply(tknzr.tokenize)
     #split up the tags
-
     df["text_tokenized"] = df["text_tokenized"].apply(clean_tags)
     #lowercase everything
     df["text_tokenized"] = df["text_tokenized"].apply(lambda(split_tweet): [entry.lower() for entry in split_tweet])

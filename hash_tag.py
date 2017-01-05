@@ -9,12 +9,13 @@ import re
 # arr = [11,12,13]
 
 
-disaster_array = ["michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm",
+disaster_array = ["napa_earthquake", "michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm",
                   "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm",
                   "washington_wildfire", "newyork_storm"]
-state_code = [26, 6, 53, 19, 19, 34, 40, 19, 50, 54, 48, 53, 53, 36]
+state_code = [6, 26, 6, 53, 19, 19, 34, 40, 19, 50, 54, 48, 53, 53, 36]
 
-hash_1 = [r"""storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding | detroitflood""",
+hash_1 = [r"""napa earthqauke""",
+          r"""storm | windstorm | tempest | high wind | strong wind | flood | high water | flooding | detroitflood""",
           r"""fire | wildfire | wild fire | californiafire | burning""",
           r"""mudslide | slide | wild fire | fire | wildfire | earthfall | avalanche | landslide | mud""",
           r"""storm | windstorm | tempest | high wind | strong wind | tornado | cyclone | twister | typhoon | whirlwind | hurricane | flood | high water | flooding | wind | breeze""",
@@ -38,51 +39,50 @@ for ij in xrange(len(disaster_array)):
     # if ij == 6 or ij == 8 or ij == 9 or ij == 12:   # skip some disasters due to not having enough data
     #     continue
 
-    # if ij != 1:
-    #     continue
+    #
 
+    if ij != 0:
+        l = {}
+        r = re.compile(
+            hash_1[ij],
+            flags=re.I | re.X)
 
-    l = {}
-    r = re.compile(
-        hash_1[ij],
-        flags=re.I | re.X)
+        for file in glob.glob("./data/disasters/" + disaster_array[ij] + "/hash" + '*/*.txt'):
+            # print file
+            filename = re.findall('[^\\\\/]+', file)[-1]
 
-    for file in glob.glob("./data/disasters/" + disaster_array[ij] + "/hash" + '*/*.txt'):
-        # print file
-        filename = re.findall('[^\\\\/]+', file)[-1]
+            idfilepath = str(filename)
 
-        idfilepath = str(filename)
+            if int(idfilepath[11:13]) == state_code[ij]:
+                # print idfilepath
 
-        if int(idfilepath[11:13]) == state_code[ij]:
-            # print idfilepath
+                with open("./data/disasters/" + disaster_array[ij] + "/hash" + "/" + idfilepath, 'rU') as f:
+                    rd = csv.reader(f, delimiter="\t")
+                    # print len(rd)
 
-            with open("./data/disasters/" + disaster_array[ij] + "/hash" + "/" + idfilepath, 'rU') as f:
-                rd = csv.reader(f, delimiter="\t")
-                # print len(rd)
+                    for i in rd:
+                        if i[0] in l:
+                            l[i[0]] += int(i[1])
+                        else:
+                            l[i[0]] = int(i[1])
+                            # print len(l)
 
-                for i in rd:
-                    if i[0] in l:
-                        l[i[0]] += int(i[1])
-                    else:
-                        l[i[0]] = int(i[1])
-                        # print len(l)
+        hash_2 = []
+        # print l
+        for i in l:
+            if re.search(r, str(i)):
+                hash_2.append(i)
+        # print len(hash_2)
+        # print (hash_2)
 
-    hash_2 = []
-    # print l
-    for i in l:
-        if re.search(r, str(i)):
-            hash_2.append(i)
-    # print len(hash_2)
-    # print (hash_2)
+        s = ''
+        for i in hash_2:
+            s += i + " | "
 
-    s = ''
-    for i in hash_2:
-        s += i + " | "
-
-    s = s[:-3]
-    # s += " | dff"
-    s += ''
-    # print s
+        s = s[:-3]
+        # s += " | dff"
+        s += ''
+        # print s
 
     # disaster_array = [
     #     "michigan_storm",
@@ -104,6 +104,9 @@ for ij in xrange(len(disaster_array)):
 
 
     manually_verified_hashtags = [
+
+        "| earthquake | aftershock | aftershocks | foreshock | eathquake | eartquake | earthquakes | quake | bigearthquake | bayquake | earrhquake | majorearthquake | postearthquake | earthquakedamage | eathquakedamage | earthquakedamage2014 | 3amearthquake | earthquake2014 | earthquake14 | postearthquakeinspections | caearthquake | californiaearthquake | californiaearthquakes | CAearthquake | CAearthquakes | earthquakeCA | norcalearthquake | sfoearthquake | bayareaearthquake | norcaquake | napaquake | napaquakes | napaearthquake | southnapaquake | napashake | earthquakeinnapa | southnapaearthquake | eartquakenapa | sonomaquake | southnapearthquake | earthquakenapa | napaquake14 | napaquake2014 | westnapafault | earthquakeruinednapaplans | napastrong | prayfornapa | rebuildnapa | staysafenapa | staystrongnapa | recovernapa | NapaEarthquake6 | SanFranciscoearthquake | sfearthquake | bayareaquake | sfquake | earthquakesf | earthquakesanfrancisco | earthquakessf | sfeathquake | earthquakesf2014 | earthquakebayarea | sanfranquake2014 | americancanyonquake | americancanyonearthquake | earthquakeamericancanyon | earthquakeamericancanyon | earthquakeinamericancanyon | prayforamericancanyon | myfirstquake | myfirstearthquake | my1stquake | earthquakebelt | earthquakesucks | earthquaketoday | hateearthquakes | pissoffearthquake | fuckyouearthquake | nomoreearthquakes | EarthquakeAt3am | thatwasafuckinghugeearthquake | noearthquakehere | noearthquakes | ItWasAnEarthquake | fearoftheearthquake | terroirquake | earthquakesfiresfloodsetc | caloforniaearthquake | postearthquakepost | earthquakepreparedness | survivedtheearthquake | earthquakereadiness | earthquakekit | earthquakeprobs | earthquakeproblems | haterofearthquakes | earthquakesurviving | firstquakeinnewhouse | earthquakesurvivor | August24EarthquakeSurvivor | sfearthquakewelcome | quakenoob | didntfeelanyearthquake | earthequakemode | isurvivedanearthquake | harvestearthquake | earthquakessuck | ihateearthquakes",
+
         all_flood_keywords + " | floodageddon | stupidfloods | floodmageddon | thegreatflood | flooding | FloodsAren | floodzilla2014 | flood | nonstopstorms | majorflooding | floodssuck | Detroitflood | zomgfloods | basementflood | itsstormingthough | floodingintaylor | michiganflood2k14 | IntoTheStorm | FloodDay | flooded | Floodageddon | afterthestorm | DetroitFlood2014 | floodedbasement | dearbornflood | floodingindetroit | NoFloodZone | Flooded | StupidFlood | FloodedinDetroit | schoolsflooded | detroitflood2014 | floods | MIFlood | theflood | detroitfloods | Local4stormpicks | StormvsEdgerton | TheFlood | storm | basementisflooded | floodedroads | FloodsEverywhere | floodmagedon | floodingindearborn | thunderstorm | floodrecovery | detroitisflooded | Flood | greatfloodof2014 | beastisflooded | metrodetroitflooding | Flooding | stupidflood | onlyroutenotflooded | FLOODZONE | floodsfordays | aramfloodlive | floodymess | flood2014 | summerstorm | Floodgate | detroitflooding | taylorflood | floodedout | thunderstorms | miflood | FloodingProblems | thegreatflood2k14 | Flood2014 | floodpocalypse2014 | DetroitFloodOf2014 | floodseverywhere | GreatFlood | DetroitFloods | flashflood | detroitFlood | celebritystorms | FloodWarnings | DetroitFlood | detroitflood | nofloods | midweststorm | livefromtheflood2014 | floodingproblems | Floodpocolypse | storms",
         all_fire_keywords + " | cafire | StreetsOnFire | californiafire | calfires | willfire540 | firefight | FirecrackersElderts | wegotthatfire | habanerohellfire | LakeCountyFires | TassajaraFire | summitfire | KesterFire | 1yearsincefireproof | oxnardfire | calfire | norcalonfire2015 | FireAndTheFlood | FireHotMami | woodburninggrill | fireescape | Firefighters | TenayaFire | buffalofiredepartment | fireengine | 1YearSinceFireproof | aliottasviafirenze | FireTrucks | firemen | legsbeonfire | valleyfire | westcovinafiredepartment | cawildfirerelief | firehazard | firefire | ArcadeFire | Firemen | sunnyvalefire | lacountyfire | woodburning | woodfire | putoutthefires | carfire | thefirewentwild | FullertonFire | firefighters | brushfire | HouseOnFire | firehouse | SanJoseFire | CAFires | arcadefire | Campfire | laurelesfire | Roughfire | FireTruck | junctionfire | LaurelesFire | kingscountyfiredepartment| Valleyfire | firefightercostume | WeGotThatFire | sundancefire | firethecannons | firewood | fullertonisonfire | RisnerFire | DonationsForTheFireVictims | wildfire | hummerfire | lakecountyfire | limofire | thefirewatchersdaughter | cobbfire | firesuppression | thearcadefire | yosemitefire | roughfire2015 | LaHabraFire | thesmelloffirewood | EarthWindandFire | firedancing | RockAfireExplosion | venturacountyfiredepartment | LAOnFire | arcadefireinmyears | PachecoFire | tassajarafire | firestone805 | buttefire | fireshurtredcrosshelps | firefighterbrotherhood | ValleyFire | firefighting | streetsonfire| roughfire | breathoffire | fireman | ThankYouFirefighters | onfire2015 | liveyourfiretv | firedancers | glazefire | WildfireSmoke | firefighter | moralesfire | valleyFire | cawildfires | pitfirewestlake | WhenTheresAFire | losangelesfiredepartment | FuckinFire | firetruck | fireinthesky | quadsonfire | ButteFire | wildfiresmoke | forestfire | firecontrol | firemenarehot | FiremenAreHot | ButteCountyFire | lakevillefire | butteandvallyfires | LakeFire | RoughFire | itlooksliketheskyisonfire | ButteMountainFire | OldFire | buttefire2015 | CalFire | CaliforniaFireSeason | firedepartment | Tenyafire | ValleyFires | wildfires | futurefirefighter | rimfire01 | HumboldtFireDepartment | yosemitefires | heritagefire | Calfire | californiaisburning | Hellfire | skyonfire | OnFireNorCal | Cawilfires | californiafires | californiaisonfire",
         all_flood_keywords + " | preventwildfires | WAWILDFIRE | wildfires | WAWildfires | morefires | WAWildFire | wildfiresunrise | firehelmets | wafire | baldyfire | WAWildFires | fireseason2015 | washingtonfires2015 | TacomaFire | washingtononfire | Wildfire | chelanfires | forestfire | WAwildfire | WashingtonOnFire | grizzlybearfire | firehaze | wawildfire | nomorefiresplease | forrestfire | FireSmog | pnwfires | washingtonStateFires | firefighters | WaWILDFIRE | washingtonfires | urbancampfire | worldonfire | Wildfires | NotSureIfChelanFireCanReachMe | ThankYouFirefighters | wildfirefundraiser | chelancomplexfire | firemen | firepocalypse2k15 | prayforFirefighters | forestfires | thankufirefighters | firstcreekfire | WAWildfireRelief | wildfire | okanaganfire | firefighter | fireseason | prayersforfirefighters | thewestcoastisonfire | wildfirefilter | chelanfire | wildfiresunset | thankafirefighter | wawildfires | WashingtonFires | TacomaFireDepartment | WAwildfires | firefighting | rennerfire | wafires | WAWildfire | thankyoufirefighters",
@@ -133,7 +136,7 @@ for ij in xrange(len(disaster_array)):
 
     def hash_filter(input_file, s):
 
-        output_file = input_file[:-14] + "filtered.txt"
+        output_file = input_file[:-23] + "filtered.txt"
 
         r = re.compile(
             s,
@@ -157,8 +160,8 @@ for ij in xrange(len(disaster_array)):
                         # print "Disaster related tweets: ", disaster_tweets_count
 
 
-    f = ["./data/disasters/" + disaster_array[ij] + "/" + disaster_array[ij] + "_affected_unfiltered.txt",
-         "./data/disasters/" + disaster_array[ij] + "/" + disaster_array[ij] + "_unaffected_unfiltered.txt"]
+    f = ["./data/disasters/" + disaster_array[ij] + "/" + disaster_array[ij] + "_affected_unfiltered_non_spam.txt",
+         "./data/disasters/" + disaster_array[ij] + "/" + disaster_array[ij] + "_unaffected_unfiltered_non_spam.txt"]
 
     for i in f:
         hash_filter(i, manually_verified_hashtags[ij])

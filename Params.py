@@ -33,18 +33,23 @@ class Params(object):
                     "iowa_storm", "jersey_storm", "iowa_stf_2", "texas_storm", "washington_storm", "newyork_storm"]
 
     disaster_duration = {
-        "napa_earthquake" : ('08-23-2014 00:00:00', '08-31-2014 23:59:59'),
-        "michigan_storm" : ('08-10-2014 00:00:00', '08-16-2014 23:59:59'),
+        "napa_earthquake" : ('08-23-2014 00:00:00', '08-31-2014 23:59:59'), # doesn't have data for one day before and after the disaster happened.
+        "michigan_storm" : ('08-10-2014 00:00:00', '08-16-2014 23:59:59'), # doesn't have data for one day before and after the disaster happened
         "california_fire" : ('09-08-2015 00:00:00', '09-21-2015 23:59:59'),
         "washington_mudslide" : ('08-08-2015 00:00:00', '08-23-2015 23:59:59'),
         "iowa_stf" : ('06-13-2014 00:00:00', '06-25-2014 23:59:59'),
         "iowa_storm" : ('06-19-2015 00:00:00', '06-26-2015 23:59:59'),
-        "jersey_storm" : ('06-22-2015 00:00:00', '06-24-2015 23:59:59'),
+        "jersey_storm" : ('06-22-2015 00:00:00', '07-06-2015 23:59:59'),  # check the number of tweets per day.
         "iowa_stf_2" : ('06-25-2014 00:00:00', '07-09-2014 23:59:59'),
         "texas_storm" : ('10-21-2015 00:00:00', '10-31-2015 23:59:59'),
-        "washington_storm" : ('08-28-2015 00:00:00', '08-30-2015 23:59:59'),
-        "newyork_storm" : ('11-16-2014 00:00:00', '11-28-2014 23:59:59')
+        "washington_storm" : ('08-28-2015 00:00:00', '09-12-2015 23:59:59'), # check the number of tweets per day.
+        "newyork_storm" : ('11-16-2014 00:00:00', '11-28-2014 23:59:59'),
+        "virginia_storm" : ('07-09-2015 00:00:00', '07-15-2015 23:59:59'),
+        "washington_wildfire" : ('07-08-2014 00:00:00', '07-22-2014 23:59:59'),
+        "oklahoma_storm" : ('11-26-2015 00:00:00', '11-30-2015 23:59:59'),
+        "vermont_storm" : ('06-08-2015 00:00:00', '06-23-2015 23:59:59')
     }
+
 
     peak_day = {
         "napa_earthquake" : 0,
