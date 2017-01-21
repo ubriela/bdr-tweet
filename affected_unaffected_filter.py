@@ -18,6 +18,8 @@ affected_county_array = [[99, 125, 163],
                          [37, 47],
                          [89, 45, 49, 73, 37, 121, 29, 9, 13]]
 
+newyork = [33, 41, 43, 65, 75, 63, 55, 51, 3]
+
 #TWEET_PATH = "./data/washington_wildfire/out/"
 
 #affected_arr = [89, 45, 49, 73, 37, 121, 29, 9, 13]
@@ -85,6 +87,7 @@ for ij in xrange(len(disaster_array)):
 
                         unaffected_count += 1
 
-    print "\nTotal UnAffected related tweets: ", disaster_array[ij], ": ",unaffected_count
+    print "Total UnAffected related tweets: ", disaster_array[ij], ": ",unaffected_count
 
     print "Total tweets: ", disaster_array[ij], ": ",unaffected_count + affected_count
+    print "\n"

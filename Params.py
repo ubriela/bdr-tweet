@@ -32,6 +32,12 @@ class Params(object):
     disaster_ids = ["napa_earthquake", "michigan_storm", "california_fire", "washington_mudslide", "iowa_stf",
                     "iowa_storm", "jersey_storm", "iowa_stf_2", "texas_storm", "washington_storm", "newyork_storm"]
 
+    # complete disaster list
+    disaster_array = ["napa_earthquake", "michigan_storm", "california_fire", "washington_mudslide", "iowa_stf",
+                      "iowa_storm", "jersey_storm",
+                      "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm",
+                      "washington_storm",
+                      "washington_wildfire", "newyork_storm"]
     disaster_duration = {
         "napa_earthquake" : ('08-23-2014 00:00:00', '08-31-2014 23:59:59'), # doesn't have data for one day before and after the disaster happened.
         "michigan_storm" : ('08-10-2014 00:00:00', '08-16-2014 23:59:59'), # doesn't have data for one day before and after the disaster happened

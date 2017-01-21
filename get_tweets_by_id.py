@@ -29,7 +29,7 @@ Logger = None
 #TWEET_PATH = "./data/ny_flood"
 
 # For Washington tweets
-TWEET_PATH = "./data/iowa_stf_2"
+TWEET_PATH = "./data/twitter_sandy/data/"
 
 #county_array = [6075, 6055, 6041, 6033, 6097, 6113, 6095, 6011, 6013, 6001, 6081]
 
@@ -153,6 +153,8 @@ def get_tweets_bulk(twapi, idfilepath):
 
     print (folder_list)
     '''
+
+    
     os.chdir(TWEET_PATH)
     for ijk in xrange (9, 10):
         if ijk < 10:
@@ -182,6 +184,38 @@ def get_tweets_bulk(twapi, idfilepath):
                     get_tweet_list(twapi, tweet_ids, file_out)
                 file_out.close()
 
+    '''
+    os.chdir(TWEET_PATH)
+
+    print(os.getcwd())
+    for file in glob.glob("*.txt"):
+        idfilepath = str(file)
+        print (idfilepath)
+        file_out = open("C:/Sumeet/IMSC/tweet/tweet_mining/data/twitter_sandy/tweet.txt", 'w')
+        with open(idfilepath, 'rb') as idfile:
+            for line in idfile:
+                #print (line)
+                a = [x.strip() for x in line.split('\t')]
+                ax = [x.strip() for x in a[0].split(':')]
+                #print (a[-1])
+                if a[-1] == "False":
+                    #print ("sd")
+                    continue
+                #print (ax[-1])
+                #break
+                tweet_id = get_tweet_id(ax[-1])
+                Logger.debug('Fetching tweet for ID %s', tweet_id)
+                # API limits batch size to 100
+                if len(tweet_ids) < 100:
+                    tweet_ids.append(tweet_id)
+                else:
+                    get_tweet_list(twapi, tweet_ids, file_out)
+                    tweet_ids = list()
+                    # process rump of file
+        if len(tweet_ids) > 0:
+            get_tweet_list(twapi, tweet_ids, file_out)
+        file_out.close()
+        '''
 
 
 def usage():

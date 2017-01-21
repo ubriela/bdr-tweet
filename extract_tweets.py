@@ -62,21 +62,36 @@ def extract_tweets(tweet_input, tweet_output, tweet_index=0, type='tweet_only'):
 
 
 # setup
-tweet_only, with_sentiment, with_informative, without_tweet = False, False, True, False
+tweet_only, with_sentiment, with_informative, without_tweet = False, False, False, True
+disaster_array = ["napa_earthquake", "michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm",
+                  "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm",
+                  "washington_wildfire", "newyork_storm"]
+
+area = ["affected_filtered", "unaffected_filtered"]
+type = ["hash", "classify"]
 
 # extract tweet_only
 if tweet_only:
-    for file in glob.glob(Params.gesis_disaster_folder + "*/*.txt"):
-        basepath, filename = os.path.split(file)
-        file_out = Params.tweet_folder + filename
-        extract_tweets(file, file_out, type='tweet_only')
+    for ij in disaster_array:
+        for i in area:
+            for j in type:
+                for file in glob.glob(Params.gesis_disaster_folder + ij + "/" + ij + "_" + i + "_" + j + ".txt"):
+        #for file in glob.glob(Params.gesis_disaster_folder + "/" + ij + "/" + ij .txt"):
+                    basepath, filename = os.path.split(file)
+                    file_out = Params.tweet_folder + filename
+                    extract_tweets(file, file_out, type='tweet_only')
 
 # add sentiment to data
 if with_sentiment:
-    for file in glob.glob(Params.gesis_disaster_folder + "/*/*.txt"):
-        basepath, filename = os.path.split(file)
-        file_out = Params.with_sentiment_folder + filename
-        extract_tweets(file, file_out, type='with_sentiment')
+    for ij in disaster_array:
+        for i in area:
+            for j in type:
+                for file in glob.glob(Params.gesis_disaster_folder + ij + "/" + ij + "_" + i + "_" + j + ".txt"):
+    #for file in glob.glob(Params.gesis_disaster_folder + "/*/*.txt"):
+                    basepath, filename = os.path.split(file)
+                    file_out = Params.with_sentiment_folder + filename
+                    #print file_out
+                    extract_tweets(file, file_out, type='with_sentiment')
 
 # add informative to tweets
 if with_informative:
@@ -87,8 +102,15 @@ if with_informative:
 
 # extract statistics without tweet
 if without_tweet:
-    for file in glob.glob(Params.with_sentiment_folder + "*.txt"):
-        basepath, filename = os.path.split(file)
-        file_out = Params.without_tweet_folder + filename
-        extract_tweets(file, file_out, type='without_tweet')
+    for ij in disaster_array:
+        for i in area:
+            for j in type:
+                #print str(Params.with_sentiment_folder + ij + "_" + i + "_" + j + ".txt")
+                for file in glob.glob(Params.with_sentiment_folder + ij + "_" + i + "_" + j + ".txt"):
+    #for file in glob.glob(Params.with_sentiment_folder + "*.txt"):
+                    basepath, filename = os.path.split(file)
+                    #print filename
+                    file_out = Params.without_tweet_folder + filename
+                    #print file_out
+                    extract_tweets(file, file_out, type='without_tweet')
 

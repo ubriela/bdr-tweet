@@ -30,8 +30,9 @@ model_flag = 0
 
 neg_ratio = []
 
-senti_type = int(sys.argv[4])
-classification_type = int(sys.argv[3])
+#senti_type = int(sys.argv[4])
+#classification_type = int(sys.argv[3])
+classification_type = 0
 
 #INPUT_FOLDER = './data/gesis/2014-08/state/'
 #OUTPUT_FOLDER = './data/gesis/2014-08/state_filter/'
@@ -40,74 +41,155 @@ disaster_array = ["napa_earthquake", "michigan_storm", "california_fire", "washi
                   "oklahoma_storm", "iowa_stf_2", "vermont_storm", "virginia_storm", "texas_storm", "washington_storm",
                   "washington_wildfire", "newyork_storm"]
 
-file_type = str(sys.argv[5])
+disaster_type = ["earthquake", "flood", "fire", "fire_flood", "flood", "flood", "flood", "flood", "flood", "flood", "flood", "flood", "flood", "fire", "flood"]
+
+file_type = "unfiltered_non_spam"
 
 
 
 #INPUT_FOLDER = "./data/disasters/california_fire/california_fire_affected_filtered.txt"
-for ij in disaster_array:
-    print ij
-    if ij == "napa_earthquake":
-        continue
+for ij in xrange(len(disaster_array) - 1, len(disaster_array)):
+    print disaster_array[ij]
+    #if ij == 14 or ij == 0:
+    #    continue
     arr = ["affected", "unaffected"]
     for ji in arr:
-        for file in glob.glob("./data/disasters/" + ij + "/" + ij + "_" + ji + "_" + file_type +'.txt'):
+        for file in glob.glob("./data/disasters/" + disaster_array[ij] + "/" + disaster_array[ij] + "_" + ji + "_" + file_type +'.txt'):
             #print file
             filename = re.findall('[^\\\\/]+', file)[-1]
 
             # out = re.findall('[^\\\\/]+', file)[-2]
 
             if classification_type == 0:
-                if sys.argv[1] == "./data/CrisisLex/CrisisLex27K.csv":
-                    dimensions = int(sys.argv[2])
-                    df = pd.read_csv(sys.argv[1], encoding="ISO-8859-1", delimiter="\t")
-                    my_columns = ["id", "keyword", "key", "choose_one", "text"]
-                    df.columns = my_columns
+                if disaster_type[ij] == "earthquake":
+                    dimensions = 100
+
+                    stem_map_high = json.load(open('./data/disasters/classify/earthquake_stem_map_high.json'))
+                    stem_map_low = json.load(open('./data/disasters/classify/earthquake_stem_map_low.json'))
+                    low_2_high_map = json.load(open('./data/disasters/classify/earthquake_low_2_high_map.json'))
+
+                    word2vec_flag = 1
+
+                    dictionary = corpora.Dictionary.load('./data/disasters/classify/earthquake_model.dict')
+                    tfidf = models.TfidfModel.load('./data/disasters/classify/earthquake_model.tfidf')
+                    lsi = models.LsiModel.load('./data/disasters/classify/earthquake_model.lsi')
+
+                    model_flag = 1
+
+                    input_file = "./data/disasters/classify/earthquake.csv"
+                    arr = []
+                    with open(input_file) as f:
+                        for line in f:
+                            a = [x.strip() for x in line.split(',')]
+                            arr.append(a)
+
+                    # df = np.array(arr)
+                    # df = pd.read_csv(input_file, encoding="ISO-8859-1", delimiter=",")
+                    my_columns = ["choose_one", "text", "none"]
+
+                    df = pd.DataFrame(arr, columns=my_columns)
                     df['choose_one:confidence'] = df['choose_one'].map(
-                        lambda x: 1 if x == "Not related" or x == "Related and informative" else 0.5)
-                    df['choose_one'] = df['choose_one'].map(lambda
-                                                                x: "Relevant" if x == "Related and informative" or x == "Related - but not informative" else "Not Relevant")
-
-                    if os.path.isfile('./data/word2vec/word_2_vec_token_mappings/crisislex26_stem_map_high.json'):
-                        stem_map_high = json.load(open('./data/word2vec/word_2_vec_token_mappings/crisislex26_stem_map_high.json'))
-                        stem_map_low = json.load(open('./data/word2vec/word_2_vec_token_mappings/crisislex26_stem_map_low.json'))
-                        low_2_high_map = json.load(
-                            open('./data/word2vec/word_2_vec_token_mappings/crisislex26_low_2_high_map.json'))
-
-                        word2vec_flag = 1
-
-                    if os.path.isfile('./model/crisis_model.lsi'):
-                        dictionary = corpora.Dictionary.load('./model/crisis_model.dict')
-                        tfidf = models.TfidfModel.load('./model/crisis_model.tfidf')
-                        lsi = models.LsiModel.load('./model/crisis_model.lsi')
-
-                        model_flag = 1
+                        lambda x: 1 if x == "Not Relevant" or x == "Relevant" else 0.5)
 
 
-                elif sys.argv[1] == "./data/Ryan/10KLabeledTweets_confidence.csv":
-                    df = pd.read_csv(sys.argv[1], encoding="ISO-8859-1")
-                    dimensions = int(sys.argv[2])
-                    # load in the stored low_2_high_map
-                    if os.path.isfile('./data/word2vec/word_2_vec_token_mappings/ryan_stem_map_high.json'):
-                        stem_map_high = json.load(open('./data/word2vec/word_2_vec_token_mappings/ryan_stem_map_high.json'))
-                        stem_map_low = json.load(open('./data/word2vec/word_2_vec_token_mappings/ryan_stem_map_low.json'))
-                        low_2_high_map = json.load(open('./data/word2vec/word_2_vec_token_mappings/ryan_low_2_high_map.json'))
+                elif disaster_type[ij] == "flood":
+                    dimensions = 750
 
-                        word2vec_flag = 1
+                    stem_map_high = json.load(open('./data/disasters/classify/flood_stem_map_high.json'))
+                    stem_map_low = json.load(open('./data/disasters/classify/flood_stem_map_low.json'))
+                    low_2_high_map = json.load(open('./data/disasters/classify/flood_low_2_high_map.json'))
 
-                    if os.path.isfile('./model/model.lsi'):
-                        dictionary = corpora.Dictionary.load('./model/model.dict')
-                        tfidf = models.TfidfModel.load('./model/model.tfidf')
-                        lsi = models.LsiModel.load('./model/model.lsi')
+                    word2vec_flag = 1
 
-                        model_flag = 1
+                    dictionary = corpora.Dictionary.load('./data/disasters/classify/flood_model.dict')
+                    tfidf = models.TfidfModel.load('./data/disasters/classify/flood_model.tfidf')
+                    lsi = models.LsiModel.load('./data/disasters/classify/flood_model.lsi')
 
+                    model_flag = 1
+
+                    input_file = "./data/disasters/classify/flood.csv"
+
+                    arr = []
+                    with open(input_file) as f:
+                        for line in f:
+                            a = [x.strip() for x in line.split(',')]
+                            arr.append(a)
+
+                    # df = np.array(arr)
+                    # df = pd.read_csv(input_file, encoding="ISO-8859-1", delimiter=",")
+                    my_columns = ["choose_one", "text", "none"]
+
+                    df = pd.DataFrame(arr, columns=my_columns)
+                    df['choose_one:confidence'] = df['choose_one'].map(
+                        lambda x: 1 if x == "Not Relevant" or x == "Relevant" else 0.5)
+
+                elif disaster_type[ij] == "fire":
+                    dimensions = 350
+
+                    stem_map_high = json.load(open('./data/disasters/classify/fire_stem_map_high.json'))
+                    stem_map_low = json.load(open('./data/disasters/classify/fire_stem_map_low.json'))
+                    low_2_high_map = json.load(open('./data/disasters/classify/fire_low_2_high_map.json'))
+
+                    word2vec_flag = 1
+
+                    dictionary = corpora.Dictionary.load('./data/disasters/classify/fire_model.dict')
+                    tfidf = models.TfidfModel.load('./data/disasters/classify/fire_model.tfidf')
+                    lsi = models.LsiModel.load('./data/disasters/classify/fire_model.lsi')
+
+                    model_flag = 1
+
+                    input_file = "./data/disasters/classify/fire.csv"
+
+                    arr = []
+                    with open(input_file) as f:
+                        for line in f:
+                            a = [x.strip() for x in line.split(',')]
+                            arr.append(a)
+
+                    # df = np.array(arr)
+                    # df = pd.read_csv(input_file, encoding="ISO-8859-1", delimiter=",")
+                    my_columns = ["choose_one", "text", "none"]
+
+                    df = pd.DataFrame(arr, columns=my_columns)
+                    df['choose_one:confidence'] = df['choose_one'].map(
+                        lambda x: 1 if x == "Not Relevant" or x == "Relevant" else 0.5)
+
+                elif disaster_type[ij] == "fire_flood":
+                    dimensions = 750
+
+                    stem_map_high = json.load(open('./data/disasters/classify/fire_flood_stem_map_high.json'))
+                    stem_map_low = json.load(open('./data/disasters/classify/fire_flood_stem_map_low.json'))
+                    low_2_high_map = json.load(open('./data/disasters/classify/fire_flood_low_2_high_map.json'))
+
+                    word2vec_flag = 1
+
+                    dictionary = corpora.Dictionary.load('./data/disasters/classify/fire_flood_model.dict')
+                    tfidf = models.TfidfModel.load('./data/disasters/classify/fire_flood_model.tfidf')
+                    lsi = models.LsiModel.load('./data/disasters/classify/fire_flood_model.lsi')
+
+                    model_flag = 1
+
+                    input_file = "./data/disasters/classify/fire_flood.csv"
+
+                    arr = []
+                    with open(input_file) as f:
+                        for line in f:
+                            a = [x.strip() for x in line.split(',')]
+                            arr.append(a)
+
+                    # df = np.array(arr)
+                    # df = pd.read_csv(input_file, encoding="ISO-8859-1", delimiter=",")
+                    my_columns = ["choose_one", "text", "none"]
+
+                    df = pd.DataFrame(arr, columns=my_columns)
+                    df['choose_one:confidence'] = df['choose_one'].map(
+                        lambda x: 1 if x == "Not Relevant" or x == "Relevant" else 0.5)
 
 
             if classification_type == 0:
 
-                output_file = file[:-24] + '_classification_related.txt'
-                output_file_unrelated = file[:-24] + '_classification_unrelated.txt'
+                output_file = file[:-24] + '_filtered_classify.txt'
+                #output_file_unrelated = file[:-24] + '_classification_unrelated.txt'
                 #final_output_file = dir_path + '/out_classification_sent_' + filename
                 print output_file
 
@@ -253,6 +335,7 @@ for ij in disaster_array:
 
                 cross_val_num = 8
                 # roc_data = k_fold_roc(df_lsi_features, dimensions, cross_val_num)
+                #print df_lsi_features
                 X = df_lsi_features[[i for i in range(dimensions)]]
                 y = df_lsi_features["choose_one"]
 
@@ -281,6 +364,7 @@ for ij in disaster_array:
                                     st += a[i]
                                 else:
                                     st += a[i] + ", "
+                                    #st.encode('ascii').strip()
                             arr.append(st)
                             for i in xrange(len(a) - 4, len(a)):
                                 arr.append(a[i])
@@ -288,11 +372,12 @@ for ij in disaster_array:
                             a = arr
                         reader.append(a)
 
-                reader = pd.DataFrame(reader)
+                #reader = pd.DataFrame(reader)
                 my_columns = ["text", "time", "id", "lat", "log"]
-                reader.columns = my_columns
-
-                #reader = reader.drop_duplicates(subset=["text"],keep=False).reset_index()
+                #reader.columns = my_columns
+                reader = pd.DataFrame(reader, columns=my_columns)
+                #print reader
+                reader = reader.drop_duplicates(subset=["text"],keep=False).reset_index()
                 reader = clean_and_tokenize(reader)
 
                 print "sda", len(reader)
@@ -335,6 +420,7 @@ for ij in disaster_array:
                 test_y_pred = model.predict(test_X)
 
                 xyz = test_df_lsi_features[["text", "time", "id", "lat", "log"]]
+                count = 0
                 with open(output_file, "wb") as f2:
                     s = []
                     j = 0
@@ -343,12 +429,14 @@ for ij in disaster_array:
                             s = str(row['text']) + ", " + str(row['time']) + ", " + str(row['id']) + ", " + str(
                                 row['lat']) + ", " + str(row['log'])
                             f2.write(s + '\n')
+                            count += 1
                         j += 1
 
                 y_pred = model.predict(X_test)
-
+                print "Total Line :", count
                 print len(test_y_pred)
 
+                '''
                 with open(output_file_unrelated, "wb") as f2:
                     s = []
                     j = 0
@@ -358,6 +446,7 @@ for ij in disaster_array:
                                 row['lat']) + ", " + str(row['log'])
                             f2.write(s + '\n')
                         j += 1
+                '''
 
                 # various "fitness" metrics
                 print "Train accuracy: %f \n" % model.score(X_train, y_train)

@@ -1,13 +1,23 @@
-import csv
-#from word2vec_sentifier import train, predict
-#classifier = train()
+
+# this code genrates the tweet sentiments
 import shlex
 import subprocess
+import io
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 import csv
+'''
+import resource
 
-
-
+resource.setrlimit(
+    resource.RLIMIT_CORE,
+    (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+print "Current RLIMIT_NOFILE limit:", soft, hard, "Changing to 3000..."
+resource.setrlimit(resource.RLIMIT_NOFILE, (3000, hard))
+'''
 """
     run senstiment analysis for a file, including a set of tweets
     each line of input file is a tweet's information
@@ -18,55 +28,49 @@ def SentiStrength(tweet):
     #open a subprocess using shlex to get the command line string into the correct args list format
     p = subprocess.Popen(shlex.split("java -jar SentiStrength.jar stdin sentidata data/SentStrength_Data/ binary"),stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     #communicate via stdin the string to be rated. Note that all spaces are replaced with +
-    stdout_text, stderr_text = p.communicate(tweet.replace(" ", "+").encode())
+    try:
+
+        stdout_text, stderr_text = p.communicate(tweet.replace(" ", "+").encode())
+        #print stdout_text, stderr_text
+    except UnicodeDecodeError:
+        return "false"
     #remove the tab spacing between the positive and negative ratings. e.g. 1    -5 -> 1-5
     stdout_text = stdout_text.rstrip().decode().replace("\t","")
     return stdout_text
 
-def sensiment_analyzer(neg_ratio, tweet_input, tweet_output, delimiter=',', tweet_index=0):
+def sensiment_analyzer(tweet_input, delimiter='\t', tweet_index=2):
     qw = 0
-    count_pos = 0
-    count_neg = 0
-    mood_stats = {}  # counting frequency of tweet
-    with open(tweet_input, 'rU') as f:
-        with open(tweet_output, "wb") as f2:
-            rd = csv.reader(f, delimiter=delimiter)
-            reader = []  # list of tweets
-            for a in rd:
-                arr = []
-                # a = [x.strip() for x in line.split(',')]
+    count = 0
+    neg = 0
+    tweet = []
+    mood_stats = []  # counting frequency of tweet
+    with io.open(tweet_input, 'rU', encoding='utf-8') as f:
+        for line in f:
+            #print line
+            res = SentiStrength((line))
+            #print res
+            res = [x.strip() for x in res.split(" ")]
+            #print res[-1]
 
-                if len(a) > 5:
-                    st = ""
-                    for i in xrange(0, len(a) - 4):
-                        if i == len(a) - 5:
-                            st += a[i]
-                        else:
-                            st += a[i] + ", "
-                    arr.append(st)
-                    for i in xrange(len(a) - 4, len(a)):
-                        arr.append(a[i])
-                    a = []
-                    a = arr
+            if int(res[-1]) == 1:
+                neg += 1
+            count += 1
 
-                res=SentiStrength(a[tweet_index])
-                #sentiment = predict(classifier, [a[tweet_index]])
-                mood = int(res[0])
-                if mood == -1:
-                    count_neg += 1
-                elif mood == 1:
-                    count_pos += 1
 
-                a.append(str(mood))
-                # print a
-                f2.write(', '.join(a) + '\n')
-                qw += 1
-                if qw % 20 == 0:
-                    print 'Processed tweets: ' + str(qw)
 
-    print "neg =", count_neg
-    print "pos = ", count_pos
-    print (count_neg / ((count_pos + count_neg) * 1.0))
-    print (count_neg / (qw * 1.0))
+                #mood_stats.append(int(res[-1]))
+                #tweet.append(a)
+                #f2.write('\t'.join(a) + '\t' + str(mood) + '\n')
 
-    return neg_ratio.append(count_neg / ((count_pos + count_neg) * 1.0))
+            qw += 1
+            if qw % 20 == 0:
+                print 'Processed tweets: ' + str(qw)
+
+        print neg, count
+
+
+
+
+
+sensiment_analyzer("./model/word2vec-sentiments-master/train_test/test-pos.txt")
+#sensiment_analyzer("./data/austin/demo.txt", "./data/austin/demo1.txt")

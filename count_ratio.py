@@ -19,13 +19,13 @@ for ij in xrange(len(disaster_array)):
         unaffect_unfilter = sum(1 for _ in f)
         print 'the number of unaffected_unfiltered tweets', unaffect_unfilter
 
-    with open("./data/disasters/" + disaster_array[ij] + "/" + disaster_array[ij] + "_affected_filtered.txt") as f:
+    with open("./data/disasters/" + disaster_array[ij] + "/" + disaster_array[ij] + "_affected_filtered_hash.txt") as f:
         affect_filter = sum(1 for _ in f)
-        print 'the number of affected_filtered tweets', affect_filter
+        print 'the number of affected hash filtered tweets', affect_filter
 
-    with open("./data/disasters/" + disaster_array[ij] + "/" + disaster_array[ij] + "_unaffected_filtered.txt") as f:
+    with open("./data/disasters/" + disaster_array[ij] + "/" + disaster_array[ij] + "_unaffected_filtered_hash.txt") as f:
         unaffect_filter = sum(1 for _ in f)
-        print 'the number of unaffected_filtered tweets', unaffect_filter
+        print 'the number of unaffected hash filtered tweets', unaffect_filter
 
     print "Total tweets: ", disaster_array[ij], ": ", affect_unfilter + unaffect_unfilter
 

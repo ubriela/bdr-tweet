@@ -22,8 +22,8 @@ for unit_bin in ['day', 'hour']:
             # conver from UTC time to PST time
             start_date, end_date = start_date - 3600*8, end_date - 3600*8
 
-            for affect in ['_affected', '_unaffected']:
-                for filt in ['_filtered', '_unfiltered']:
+            for affect in ['_affected_filtered', '_unaffected_filtered']:
+                for filt in ['_hash', '_classify']:
                     filename = disaster_id + affect + filt
                     file = Params.without_tweet_folder + filename + '.txt'
                     print file

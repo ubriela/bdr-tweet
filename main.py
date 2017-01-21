@@ -13,7 +13,7 @@ from prepare_data import split_data_ryan, split_data_cl
 #second last parameter decides the classification filter = 0 or hash tag filter = 1
 # last parameter is to select between the two sentiment analyzer - Sentistrength = 0 and word2vec_sentifier = 1
 
-print os.system("python word2vec_tweet_filter.py ./data/Ryan/10KLabeledTweets_confidence.csv 295 0 0 unfiltered_non_spam")
+print os.system("python word2vec_tweet_filter.py")
 print "done"
 
 #print os.system("python hash_tag.py")

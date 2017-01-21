@@ -7,6 +7,8 @@ import collections
 from sets import Set
 from Params import Params
 from datetime import datetime
+import operator
+
 
 
 disaster_array = ["napa_earthquake", "michigan_storm", "california_fire", "washington_mudslide", "iowa_stf", "iowa_storm", "jersey_storm",
@@ -33,7 +35,7 @@ def remove_spam_tweets(input_file, non_spam_tweets, spam_tweets, delimeter=',', 
             except IndexError:
                 continue
 
-    data = np.array(data)
+    #data = np.array(data)
 
     #print user_ids
     #user_ids = np.loadtxt(input_file, dtype= 'int64', delimiter=delimeter, usecols = ([len()]))
@@ -41,22 +43,50 @@ def remove_spam_tweets(input_file, non_spam_tweets, spam_tweets, delimeter=',', 
     for i in range(len(user_ids)):
         map_index[user_ids[i]] = i
     counter = dict(collections.Counter(user_ids))
+    #sorted_x = sorted(counter.items(), key=operator.itemgetter(1))
+    #print sorted_x[len(sorted_x) - 50 :-1]
 
     non_spam_user_ids = Set([k for k in counter.keys() if counter[k] <= K])
 
-    valid_rows = np.array([id in non_spam_user_ids for id in user_ids])
-    invalid_rows = np.array([id not in non_spam_user_ids for id in user_ids])
+    valid_rows = []
 
-    #data = np.loadtxt(input_file, dtype= 'str', delimiter=delimeter)
-    non_spam_data = data[valid_rows]
-    spam_data = data[invalid_rows]
+    for id in data:
+        if id[-3] in non_spam_user_ids:
+            valid_rows.append(1)
+        else:
+            valid_rows.append(0)
 
-    print 'Number of spam tweets: ', len(spam_data), '(', int((len(spam_data)+ 0.0)/len(user_ids) * 100), '%)'
-    np.savetxt(non_spam_tweets, non_spam_data, fmt='%s', delimiter=delimeter)
-    np.savetxt(spam_tweets, spam_data, fmt='%s', delimiter=delimeter)
+
+    non_spam_data = 0
+    spam_data = 0
+    #print valid_rows
+    with open(non_spam_tweets,"wb") as f2:
+        for i in xrange(len(valid_rows)):
+            if int(valid_rows[i]) == 1:
+                f2.write(",".join(data[i]))
+                non_spam_data += 1
+
+    with open(spam_tweets, "wb") as f3:
+        for i in xrange(len(valid_rows)):
+            if int(valid_rows[i]) == 0:
+                f3.write(",".join(data[i]))
+                spam_data += 1
+
+
+    print 'Number of spam tweets: ', (spam_data), '(', int(((spam_data)+ 0.0)/len(user_ids) * 100), '%)'
+    print "Number of Non Spam users: ", len(non_spam_user_ids)
+    print "Number of Spam users: ", len(counter) - len(non_spam_user_ids)
+    #print "Number of Non Spam users: ", ((non_spam_user * 1.0) / (spam_user + non_spam_user)) * 100
+    #print "Number of Spam users : ", ((spam_user * 1.0) / (spam_user + non_spam_user)) * 100
+    #np.savetxt(non_spam_tweets, non_spam_data, fmt='%s', delimiter=delimeter)
+    #np.savetxt(spam_tweets, spam_data, fmt='%s', delimiter=delimeter)
 
 for ij in disaster_array:
-    print d_duration[ij]
+
+    #print d_duration[ij]
+    print ij
+    #if ij != "newyork_storm":
+    #    continue
     K = 15
     date_format = "%m-%d-%Y %H:%M:%S"
     a = datetime.strptime(d_duration[ij][0], date_format)
