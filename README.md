@@ -1,3 +1,12 @@
+Regarding the Dataset
+
+Contents of disasters folder - 
+
+It contains the geo tagged tweets for 15 disasters accross USA.
+Disaster List
+1. Napa Earthquake
+
+
 Informative/Noninformative Dataset
 https://github.com/sajao/CrisisLex/tree/master/data/CrisisLexT26
 
