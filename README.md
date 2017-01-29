@@ -2,7 +2,7 @@ Regarding the Dataset
 
 Contents of disasters folder - 
 
-It contains the geo tagged tweets for 15 disasters accross USA.
+It contains geo tagged tweets for 15 disasters accross USA.
 Disaster List
 1. Napa Earthquake
 
