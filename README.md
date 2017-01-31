@@ -1,4 +1,3 @@
-Project Name <hr>
 <h3><b> On Identifying Disaster-Related Tweets: Matching-based or Learning-based? </b></h3>
 
 <br>
