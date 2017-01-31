@@ -10,11 +10,7 @@ Social media feeds such as tweets are emerging as platforms contributing to situ
 
 Regarding the Dataset
 <hr>
-Contents of disasters folder - 
-<br>
-It contains geo tagged tweets for 15 disasters accross USA.
-<br>
-Disaster List 
+Disasters folder contains geo tagged tweets for 15 disasters accross USA.
 <br>
 1. California Fire <br>
 2. Iowa Storm, Tornadoes and Flood <br>
