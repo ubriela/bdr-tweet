@@ -3,9 +3,9 @@ Regarding the Dataset
 Contents of disasters folder - 
 
 It contains geo tagged tweets for 15 disasters accross USA.
-Disaster List 
-1. California Fire
-2. Iowa Storm, Tornadoes and Flood
+Disaster List </n>
+1. California Fire </n>
+2. Iowa Storm, Tornadoes and Flood </n>
 3. Iowa 
 
 
