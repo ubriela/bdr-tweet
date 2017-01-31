@@ -1,5 +1,4 @@
-Project Name 
-<hr>
+Project Name <hr>
 <h3><b> Visualizing and classifying disaster-related Twitter media data to enhance situational awareness during disaster response. </b></h3>
 
 Abstract 
