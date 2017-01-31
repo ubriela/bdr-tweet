@@ -1,5 +1,5 @@
 Project Name <hr>
-<h3><b> Visualizing and classifying disaster-related Twitter media data to enhance situational awareness during disaster response. </b></h3>
+<h3><b> On Identifying Disaster-Related Tweets: Matching-based or Learning-based? </b></h3>
 
 <br>
 Abstract 
@@ -33,18 +33,13 @@ Disaster List
 15. Washington Wildfire <br>
 
 
-Informative/Noninformative Dataset
-https://github.com/sajao/CrisisLex/tree/master/data/CrisisLexT26
-
-https://github.com/sajao/CrisisLex/tree/master/data/CrisisLexT6/
-
+References:
 
 Disasters in 2015 + 1016
 https://www.fema.gov/disasters/grid/year/2016?field_disaster_type_term_tid_1=All
 
-
-6.5 million geotagged twitter posts
-https://github.com/mdredze/twitter_sandy
+Informative/Noninformative Dataset
+https://github.com/sajao/CrisisLex/tree/master/data/CrisisLexT26
 
 Library
 SVM classifier: https://github.com/daoudclarke/pysvmlight/tree/master/lib
