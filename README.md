@@ -1,7 +1,7 @@
-Project <br>
-<b> Visualizing and classifying disaster-related Twitter media data to enhance situational awareness during disaster response </b>
+Project Name <br>
+<h1><b> Visualizing and classifying disaster-related Twitter media data to enhance situational awareness during disaster response. </b></h1>
 
-
+Description 
 Regarding the Dataset
 
 Contents of disasters folder - 
