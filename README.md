@@ -1,7 +1,11 @@
 Project Name <br>
-<h1><b> Visualizing and classifying disaster-related Twitter media data to enhance situational awareness during disaster response. </b></h1>
+<h3><b> Visualizing and classifying disaster-related Twitter media data to enhance situational awareness during disaster response. </b></h3>
 
-Description 
+Abstract 
+<hr>
+<br>
+Social media feeds such as tweets are emerging as platforms contributing to situational awareness during disasters. Information shared on Twitter by both affected population (e.g., requestingassistance,warning)andthoseoutsidetheimpactzone (e.g., providing assistance) would help ﬁrst responders, decision makers and the public to understand the situation ﬁrst-hand. Timely analysis of disaster-relevant tweets requires an ability to automatically ﬁnd tweets related to a particular disaster. This problem is challenging as tweet messages are often short and unstructured, and learning-based approach for ﬁltering disasterrelated tweets may not provide satisfactory results. Thus, we propose a simple yet effective matching-based algorithm for ﬁltering relevant messages. To evaluate the two approaches, we putthemintoaframeworkproposedforanalyzingdiaster-related posts. Analysis results on ten datasets with various disaster types show the pros and cons of each approach. 
+<br>
 Regarding the Dataset
 
 Contents of disasters folder - 
