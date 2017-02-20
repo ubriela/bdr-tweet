@@ -1,11 +1,19 @@
-<h3><b> On Identifying Disaster-Related Tweets: Matching-based or Learning-based? </b></h3>
-
 <br>
 Introduction 
 <hr>
-Social media feeds such as tweets are emerging as platforms contributing to situational awareness during disasters. Information shared on Twitter by both affected population (e.g., requestingassistance,warning)andthoseoutsidetheimpactzone (e.g., providing assistance) would help ﬁrst responders, decision makers and the public to understand the situation ﬁrst-hand. Timely analysis of disaster-relevant tweets requires an ability to automatically ﬁnd tweets related to a particular disaster. This problem is challenging as tweet messages are often short and unstructured, and learning-based approach for ﬁltering disasterrelated tweets may not provide satisfactory results. Thus, we propose a simple yet effective matching-based algorithm for ﬁltering relevant messages. To evaluate the two approaches, we putthemintoaframeworkproposedforanalyzingdiaster-related posts. Analysis results on ten datasets with various disaster types show the pros and cons of each approach. 
+This repository contains geotagged tweets for 15 natural disasters across the U.S.A, each corresponds to a disaster occurred in 2014-2015. Each dataset contains:
+
+1. A set of hashtags used to crawl disaster-related tweets
+2. A file containing tweets in affected area
+3. Another file contains tweets in unaffected area
+4. FEMA affected/unaffected map
+ 
 <br>
+
 <br>
+Reference
+<hr>
+Hien To, Sumeet Agrawal, Seon Ho Kim, Cyrus Shahabi. On Identifying Disaster-Related Tweets: Matching-based or Learning-based?. The 2017 IEEE International Conference on Multimedia Big Data (IEEE BigMM 2017). Laguna Hills, California, USA, April 19-21, 2017.
 
 Regarding the Dataset
 <hr>
@@ -28,13 +36,21 @@ Disasters folder contains geo tagged tweets for 15 disasters accross USA.
 15. Washington Wildfire <br>
 
 
+<hr>
 References:
+<br>
+Disaster Declarations for 2014 and 1015
+https://www.fema.gov/disasters/grid/year/2014?field_disaster_type_term_tid_1=All
+https://www.fema.gov/disasters/grid/year/2015?field_disaster_type_term_tid_1=All
 
-Disasters in 2015 + 1016
-https://www.fema.gov/disasters/grid/year/2016?field_disaster_type_term_tid_1=All
-
-Informative/Noninformative Dataset
+CrisisLexT26 Dataset
 https://github.com/sajao/CrisisLex/tree/master/data/CrisisLexT26
 
-Library
-SVM classifier: https://github.com/daoudclarke/pysvmlight/tree/master/lib
+CrowdFlower10K Dataset
+http://www.crowdflower.com/data-for-everyone
+
+Sentiment140 Dataset
+http://help.sentiment140.com/for-students/
+
+<br>
+For inquiries please contact <a href="mailto:ubriela@gmail.com">Hien To</a>, or <a href="mailto:sumeetag@usc.edu">Sumeet Agrawal</a>
