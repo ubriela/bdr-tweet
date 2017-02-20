@@ -2,22 +2,22 @@
 <hr>
 This repository contains geotagged tweets for 15 natural disasters across the U.S.A, each corresponds to a disaster occurred in 2014-2015. 
 Disasters folder contains geo tagged tweets for 15 disasters accross USA.
-<br>
-1. California Fire <br>
-2. Iowa Storm, Tornadoes and Flood <br>
-3. Iowa Storm, Tornadoes and Flood 2 <br>
-4. Iowa Storm <br>
-5. Jersey Storm <br>
-6. Michigan Storm <br>
-7. Napa Earthquake <br>
-8. Newyork Storm <br>
-9. Oklahoma Storm <br>
-10. Texas Storm <br>
-11. Vermont Storm <br>
-12. Virginia Storm <br>
-13. Washington Mudslide <br>
-14. Washington Storm <br>
-15. Washington Wildfire <br>
+
+1. California Fir
+2. Iowa Storm, Tornadoes and Flood
+3. Iowa Storm, Tornadoes and Flood 2
+4. Iowa Storm
+5. Jersey Storm
+6. Michigan Storm
+7. Napa Earthquake
+8. Newyork Storm
+9. Oklahoma Storm
+10. Texas Storm
+11. Vermont Storm
+12. Virginia Storm
+13. Washington Mudslide
+14. Washington Storm
+15. Washington Wildfire
 
 Each dataset contains
 
@@ -33,18 +33,14 @@ Hien To, Sumeet Agrawal, Seon Ho Kim, Cyrus Shahabi. On Identifying Disaster-Rel
 <hr>
 Other resources:
 <br>
-Disaster Declarations for 2014 and 1015
-https://www.fema.gov/disasters/grid/year/2014?field_disaster_type_term_tid_1=All
-https://www.fema.gov/disasters/grid/year/2015?field_disaster_type_term_tid_1=All
+Disaster Declarations for [2014](https://www.fema.gov/disasters/grid/year/2014?field_disaster_type_term_tid_1=All
+) and [2015](https://www.fema.gov/disasters/grid/year/2015?field_disaster_type_term_tid_1=All)
 
-CrisisLexT26 Dataset
-https://github.com/sajao/CrisisLex/tree/master/data/CrisisLexT26
+[CrisisLexT26 Dataset](https://github.com/sajao/CrisisLex/tree/master/data/CrisisLexT26)
 
-CrowdFlower10K Dataset
-http://www.crowdflower.com/data-for-everyone
+[CrowdFlower10K Dataset](http://www.crowdflower.com/data-for-everyone)
 
-Sentiment140 Dataset
-http://help.sentiment140.com/for-students/
+[Sentiment140 Dataset](http://help.sentiment140.com/for-students/)
 
 <hr>
 For inquiries please contact <a href="mailto:ubriela@gmail.com">Hien To</a>, or <a href="mailto:sumeetag@usc.edu">Sumeet Agrawal</a>
