@@ -21,17 +21,17 @@ Disasters folder contains geo tagged tweets for 15 disasters accross USA.
 
 Each dataset contains
 
-1. A set of hashtags used to crawl disaster-related tweets
-2. A file containing tweets in affected area
-3. Another file contains tweets in unaffected area
-4. FEMA affected/unaffected map
+* A set of hashtags used to crawl disaster-related tweets
+* A file containing tweets in affected area
+* Another file contains tweets in unaffected area
+* FEMA affected/unaffected map
 
 <hr>
 ## Reference ##
 Hien To, Sumeet Agrawal, Seon Ho Kim, Cyrus Shahabi. On Identifying Disaster-Related Tweets: Matching-based or Learning-based?. The 2017 IEEE International Conference on Multimedia Big Data (IEEE BigMM 2017). Laguna Hills, California, USA, April 19-21, 2017.
 
 <hr>
-Other resources:
+## Other resources ##
 <br>
 Disaster Declarations for [2014](https://www.fema.gov/disasters/grid/year/2014?field_disaster_type_term_tid_1=All
 ) and [2015](https://www.fema.gov/disasters/grid/year/2015?field_disaster_type_term_tid_1=All)
